@@ -1,0 +1,286 @@
+.dropdown-content {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 40px;
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #E1E1E1;
+  padding: 24px;
+  width: 400px;
+  max-height: 70vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+
+    &:hover {
+      background: #a8a8a8;
+    }
+  }
+}
+
+.user-info-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #E1E1E1;
+}
+
+.user-details {
+  flex: 1;
+}
+
+.user-name {
+  font-size: 24px;
+  font-weight: 600;
+  color: #353535;
+  margin: 0 0 8px 0;
+}
+
+.user-title {
+  font-size: 14px;
+  font-weight: 400;
+  color: #666666;
+  margin: 0;
+}
+
+.nav-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid #E1E1E1;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  flex-shrink: 0;
+
+  &:hover {
+    background: #f5f5f5;
+    border-color: #3179E3;
+  }
+
+  svg {
+    display: block;
+  }
+}
+
+.transactions-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.transactions-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #353535;
+  margin: 0;
+}
+
+.transactions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.transaction-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: #f9f9f9;
+  }
+}
+
+.transaction-icon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  svg {
+    display: block;
+  }
+
+  &.income {
+    svg path {
+      stroke: #00aa00;
+    }
+  }
+
+  &.expense {
+    svg path {
+      stroke: #ff0000;
+    }
+  }
+}
+
+.transaction-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.transaction-description {
+  font-size: 14px;
+  font-weight: 400;
+  color: #353535;
+  margin: 0;
+  word-break: break-word;
+}
+
+.transaction-amount {
+  font-size: 14px;
+  font-weight: 600;
+  flex-shrink: 0;
+
+  &.income {
+    color: #00aa00;
+  }
+
+  &.expense {
+    color: #ff0000;
+  }
+}
+
+@media (max-width: 768px) {
+  .dropdown-content {
+    right: 16px;
+    width: calc(100vw - 32px);
+    max-width: 400px;
+    padding: 20px;
+    max-height: 60vh;
+  }
+
+  .user-info-section {
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+  }
+
+  .user-name {
+    font-size: 20px;
+  }
+
+  .user-title {
+    font-size: 13px;
+  }
+
+  .nav-icon {
+    width: 36px;
+    height: 36px;
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  .transactions-title {
+    font-size: 18px;
+  }
+
+  .transactions-list {
+    gap: 10px;
+  }
+
+  .transaction-item {
+    padding: 10px;
+    gap: 10px;
+  }
+
+  .transaction-icon {
+    width: 28px;
+    height: 28px;
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  .transaction-description {
+    font-size: 13px;
+  }
+
+  .transaction-amount {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dropdown-content {
+    right: 12px;
+    width: calc(100vw - 24px);
+    padding: 16px;
+    max-height: 65vh;
+  }
+
+  .user-name {
+    font-size: 18px;
+  }
+
+  .user-title {
+    font-size: 12px;
+  }
+
+  .nav-icon {
+    width: 32px;
+    height: 32px;
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  .transactions-title {
+    font-size: 16px;
+  }
+
+  .transaction-item {
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .transaction-icon {
+    width: 24px;
+    height: 24px;
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  .transaction-description {
+    font-size: 12px;
+  }
+
+  .transaction-amount {
+    font-size: 12px;
+  }
+}

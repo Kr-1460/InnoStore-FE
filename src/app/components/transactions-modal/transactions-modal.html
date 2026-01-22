@@ -1,0 +1,42 @@
+@if (isOpen()) {
+  <div class="dropdown-content">
+    <div class="user-info-section">
+      <div class="user-details">
+        <h1 class="user-name">{{ userName() }}</h1>
+        <p class="user-title">{{ userTitle() }}</p>
+      </div>
+      <a routerLink="/profile" class="nav-icon" (click)="onCloseClick()" aria-label="View profile">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M9 18L15 12L9 6" stroke="#353535" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+    
+    <div class="transactions-section">
+      <h2 class="transactions-title">Транзакции</h2>
+      <div class="transactions-list">
+        @for (transaction of transactions(); track transaction.id) {
+          <div class="transaction-item">
+            <div class="transaction-icon" [class.income]="transaction.type === 'income'" [class.expense]="transaction.type === 'expense'">
+              @if (transaction.type === 'income') {
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 4L12 20M12 4L8 8M12 4L16 8" stroke="#00aa00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              } @else {
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 20L12 4M12 20L8 16M12 20L16 16" stroke="#ff0000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              }
+            </div>
+            <div class="transaction-details">
+              <p class="transaction-description">{{ transaction.description }}</p>
+            </div>
+            <div class="transaction-amount" [class.income]="transaction.type === 'income'" [class.expense]="transaction.type === 'expense'">
+              {{ transaction.type === 'income' ? '+' : '-' }}{{ transaction.amount }} P
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+}
