@@ -1,59 +1,15 @@
-import { Component, signal, effect, Inject, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { TransactionsModal } from '../transactions-modal/transactions-modal';
+import { InnostoreIcon } from '../innostore-icon/innostore-icon';
+import { UserAvatar } from '../user-avatar/user-avatar';
 
 @Component({
   selector: 'app-header',
-  imports: [CommonModule, RouterLink, TransactionsModal],
+  imports: [CommonModule, RouterLink, InnostoreIcon, UserAvatar],
   templateUrl: './header.html',
   styleUrl: './header.scss',
 })
 export class Header {
   protected readonly userPoints = signal(100);
-  protected readonly isModalOpen = signal(false);
-
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
-    effect(() => {
-      if (this.isModalOpen() && isPlatformBrowser(this.platformId)) {
-        setTimeout(() => {
-          if (typeof document !== 'undefined') {
-            document.addEventListener('click', this.handleOutsideClick);
-          }
-        }, 0);
-      } else {
-        if (isPlatformBrowser(this.platformId) && typeof document !== 'undefined') {
-          document.removeEventListener('click', this.handleOutsideClick);
-        }
-      }
-    });
-  }
-
-  private handleOutsideClick = (event: MouseEvent): void => {
-    if (!isPlatformBrowser(this.platformId) || typeof document === 'undefined') {
-      return;
-    }
-    
-    const target = event.target as HTMLElement;
-    const dropdown = document.querySelector('.dropdown-content');
-    const profileButton = document.querySelector('.profile-link');
-    
-    if (dropdown && profileButton) {
-      if (!dropdown.contains(target) && !profileButton.contains(target)) {
-        this.closeModal();
-      }
-    }
-  };
-
-  protected openModal(event?: Event): void {
-    if (event) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
-    this.isModalOpen.set(!this.isModalOpen());
-  }
-
-  protected closeModal(): void {
-    this.isModalOpen.set(false);
-  }
 }

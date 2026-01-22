@@ -1,6 +1,9 @@
 import { Component, signal, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { ChevronRightIcon } from '../icons/chevron-right-icon/chevron-right-icon';
+import { ArrowUpIcon } from '../icons/arrow-up-icon/arrow-up-icon';
+import { ArrowDownIcon } from '../icons/arrow-down-icon/arrow-down-icon';
 
 interface Transaction {
   id: number;
@@ -12,7 +15,7 @@ interface Transaction {
 
 @Component({
   selector: 'app-transactions-modal',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, ChevronRightIcon, ArrowUpIcon, ArrowDownIcon],
   templateUrl: './transactions-modal.html',
   styleUrl: './transactions-modal.scss',
 })

@@ -78,8 +78,8 @@
     border-color: #3179E3;
   }
 
-  svg {
-    display: block;
+  app-chevron-right-icon {
+    --icon-color: #353535;
   }
 }
 
@@ -115,30 +115,26 @@
   }
 }
 
-.transaction-icon {
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
+  .transaction-icon {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
 
-  svg {
-    display: block;
-  }
+    &.income {
+      app-arrow-up-icon {
+        --icon-color: #00aa00;
+      }
+    }
 
-  &.income {
-    svg path {
-      stroke: #00aa00;
+    &.expense {
+      app-arrow-down-icon {
+        --icon-color: #ff0000;
+      }
     }
   }
-
-  &.expense {
-    svg path {
-      stroke: #ff0000;
-    }
-  }
-}
 
 .transaction-details {
   flex: 1;
@@ -193,9 +189,8 @@
     width: 36px;
     height: 36px;
 
-    svg {
-      width: 20px;
-      height: 20px;
+    app-chevron-right-icon {
+      --icon-size: 20px;
     }
   }
 
@@ -216,9 +211,9 @@
     width: 28px;
     height: 28px;
 
-    svg {
-      width: 20px;
-      height: 20px;
+    app-arrow-up-icon,
+    app-arrow-down-icon {
+      --icon-size: 20px;
     }
   }
 
@@ -251,9 +246,8 @@
     width: 32px;
     height: 32px;
 
-    svg {
-      width: 18px;
-      height: 18px;
+    app-chevron-right-icon {
+      --icon-size: 18px;
     }
   }
 
@@ -270,9 +264,9 @@
     width: 24px;
     height: 24px;
 
-    svg {
-      width: 18px;
-      height: 18px;
+    app-arrow-up-icon,
+    app-arrow-down-icon {
+      --icon-size: 18px;
     }
   }
 

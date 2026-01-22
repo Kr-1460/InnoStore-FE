@@ -1,35 +1,12 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { Header } from '../../components/header/header';
-
-interface ProductSize {
-  label: string;
-  value: string;
-}
-
-interface ProductColor {
-  id: string;
-  name: string;
-  image: string;
-}
-
-interface Product {
-  id: number;
-  name: string;
-  fullName: string;
-  price: number;
-  image: string;
-  images: string[];
-  inStock: boolean;
-  category: string;
-  sizes: ProductSize[];
-  colors: ProductColor[];
-}
+import { Product } from '../../models/product.interface';
+import { CloseIcon } from '../../components/icons/close-icon/close-icon';
 
 @Component({
   selector: 'app-product-detail',
-  imports: [CommonModule, RouterLink, Header],
+  imports: [CommonModule, RouterLink, CloseIcon],
   templateUrl: './product-detail.html',
   styleUrl: './product-detail.scss',
 })

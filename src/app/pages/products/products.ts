@@ -1,7 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { Header } from '../../components/header/header';
 
 interface Product {
   id: number;
@@ -14,7 +13,7 @@ interface Product {
 
 @Component({
   selector: 'app-products',
-  imports: [CommonModule, RouterLink, Header],
+  imports: [CommonModule, RouterLink],
   templateUrl: './products.html',
   styleUrl: './products.scss',
 })
