@@ -1,0 +1,21 @@
+:host {
+  display: inline-block;
+  
+  svg {
+    display: block;
+  }
+}
+
+@media (max-width: 768px) {
+  svg {
+    width: 120px;
+    height: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  svg {
+    width: 100px;
+    height: auto;
+  }
+}

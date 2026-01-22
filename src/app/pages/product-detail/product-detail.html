@@ -1,0 +1,70 @@
+@if (product(); as productData) {
+  <div class="product-container">
+    <a routerLink="/products" class="close-button" aria-label="Close">
+      <app-close-icon />
+    </a>
+    
+    <div class="product-images">
+      <div class="thumbnails">
+        @for (image of productData.images; track $index) {
+          <div
+            class="thumbnail"
+            [class.active]="selectedImageIndex() === $index"
+            (click)="selectImage($index)"
+          >
+            <div class="thumbnail-placeholder" [class]="'image-' + image"></div>
+          </div>
+        }
+      </div>
+      <div class="main-image">
+        <div class="main-image-placeholder" [class]="'image-' + productData.images[selectedImageIndex()]"></div>
+      </div>
+    </div>
+
+    <div class="product-details">
+      <h1 class="product-title">{{ productData.fullName }}</h1>
+      
+      <div class="product-availability" [class.in-stock]="productData.inStock">
+        {{ productData.inStock ? 'В наличии' : 'Нет в наличии' }}
+      </div>
+
+      <div class="product-price">{{ productData.price }} P</div>
+
+      <div class="selection-group">
+        <label class="selection-label">Цвет</label>
+        <div class="color-options">
+          @for (color of productData.colors; track color.id) {
+            <div
+              class="color-option"
+              [class.active]="selectedColor() === color.id"
+              (click)="selectColor(color.id)"
+            >
+              <div class="color-placeholder" [class]="'image-' + color.image"></div>
+            </div>
+          }
+        </div>
+      </div>
+
+      @if (showSizes) {
+        <div class="selection-group">
+          <label class="selection-label">Размер</label>
+          <div class="size-options">
+            @for (size of productData.sizes; track size.value) {
+              <button
+                class="size-option"
+                [class.active]="selectedSize() === size.value"
+                (click)="selectSize(size.value)"
+              >
+                {{ size.label }} ({{ size.value }})
+              </button>
+            }
+          </div>
+        </div>
+      }
+
+      <button class="order-button" (click)="placeOrder()" [disabled]="!productData.inStock">
+        Оформить заказ
+      </button>
+    </div>
+  </div>
+}

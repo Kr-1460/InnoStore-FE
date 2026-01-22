@@ -1,0 +1,9 @@
+<div class="user-info">
+  <div class="points-badge">
+    <span class="points">{{ userPoints() }} P</span>
+  </div>
+  <button class="profile-link" (click)="openModal($event)" type="button" aria-label="Open profile">
+    <div class="profile-avatar"></div>
+  </button>
+  <app-transactions-modal [isOpen]="isModalOpen()" (closeModal)="closeModal()" />
+</div>
