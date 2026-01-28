@@ -434,3 +434,34 @@
     height: 45px;
   }
 }
+
+.image-placeholder.default-placeholder {
+  background-color: #f0f0f0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  &::after {
+    content: "No Image";
+    color: #999;
+    font-size: 0.8rem;
+  }
+}
+
+/* 1. Fix for the small thumbnails */
+.thumbnail-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ensures the thumbnail fills the square perfectly */
+  display: block;
+}
+
+/* 2. Fix for the large main image */
+.main-img-display {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* Best for details: ensures the WHOLE product is visible */
+  display: block;
+}
