@@ -23,7 +23,14 @@ import { SystemColor } from '../../../components/inno-store-color-selection/inno
 })
 export class ProductForm {
   initialData = input.required<CreateProductModel>();
+  selectedColorId = input.required<string>();
+  addedColors = input<SystemColor[]>([]);
+  colorAdded = output<SystemColor>();
+  colorChanged = output<string>();
+  colorRemoved = output<SystemColor>();
+  colorUpdated = output<{ oldId: string; newColor: SystemColor }>();
   onSave = output<CreateProductModel>();
+  onSubmitForm = output();
 
   activeLang = signal<string>('ru');
   languageOptions = signal<string[]>(['ru', 'en']);
@@ -31,17 +38,12 @@ export class ProductForm {
   formData = signal<CreateProductModel>({
     price: 0,
     productGroupId: '',
-    localizations: [
-      { name: '', description: '', languageISOCode: 'ru' },
-      { name: '', description: '', languageISOCode: 'en' },
-    ],
+    localizations: [],
     sizes: [],
     images: [],
   });
 
   productVariants = signal<Record<string, CreateProductModel>>({});
-  selectedColorId = signal<string>('1');
-  addedColors = signal<SystemColor[]>([]);
 
   currentLocalization = computed(() => {
     return (
@@ -53,94 +55,53 @@ export class ProductForm {
   constructor() {
     effect(
       () => {
-        this.formData.set({ ...this.initialData() });
+        const data = this.initialData();
+        if (data) {
+          this.formData.set(data);
+        }
       },
       { allowSignalWrites: true },
     );
   }
-
-  onColorAdded(color: SystemColor) {
-    this.addedColors.update((prev) => [...prev, color]);
-
-    this.onColorChanged(color);
+  onColorAdded(c: SystemColor) {
+    this.colorAdded.emit(c);
   }
-
-  onColorChanged(color: SystemColor) {
-    const previousColorId = this.selectedColorId();
-    const currentModel = this.formData();
-
-    this.productVariants.update((variants) => ({
-      ...variants,
-      [previousColorId]: { ...currentModel },
-    }));
-
-    const existingVariant = this.productVariants()[color.id];
-
-    if (existingVariant) {
-      this.formData.set(existingVariant);
-    } else {
-      this.formData.set({
-        ...currentModel,
-        images: [],
-      });
-    }
-
-    this.selectedColorId.set(color.id);
+  onColorChanged(c: SystemColor) {
+    this.colorChanged.emit(c.id);
   }
-
-  removeColor(color: SystemColor) {
-    this.addedColors.update((prev) => prev.filter((c) => c.id !== color.id));
-
-    this.productVariants.update((v) => {
-      const newVariants = { ...v };
-      delete newVariants[color.id];
-      return newVariants;
-    });
-
-    if (this.selectedColorId() === color.id) {
-      const firstRemaining = this.addedColors()[0];
-      if (firstRemaining) {
-        this.onColorChanged(firstRemaining);
-      } else {
-        // Логика когда цветов не осталось
-        this.selectedColorId.set('');
-      }
-    }
+  onColorRemoved(c: SystemColor) {
+    this.colorRemoved.emit(c);
   }
-
-  handleColorUpdate(event: { oldId: string; newColor: SystemColor }) {
-    const { oldId, newColor } = event;
-
-    // 1. Обновляем список добавленных цветов (заменяем старый на новый)
-    this.addedColors.update((prev) => prev.map((c) => (c.id === oldId ? newColor : c)));
-
-    // 2. Переносим данные модели в хранилище variants
-    this.productVariants.update((v) => {
-      const dataToMove = v[oldId] || this.formData(); // Берем из кэша или текущей формы
-      const newVariants = { ...v };
-
-      newVariants[newColor.id] = { ...dataToMove }; // Копируем данные на новый ID
-      delete newVariants[oldId]; // Удаляем старый ID
-
-      return newVariants;
-    });
-
-    // 3. Если мы редактировали текущий активный цвет — обновляем состояние формы
-    if (this.selectedColorId() === oldId) {
-      this.selectedColorId.set(newColor.id);
-    }
+  onColorUpdated(ev: any) {
+    console.log(ev);
+    this.colorUpdated.emit(ev);
   }
 
   updateName(newName: string) {
     this.formData.update((old) => {
-      const locs = [...old.localizations];
-      locs[0] = { ...locs[0], name: newName };
-      return { ...old, localizations: locs };
+      const locs = old.localizations.map((l) => ({ ...l }));
+
+      const idx = locs.findIndex((l) => l.languageISOCode === this.activeLang());
+
+      if (idx !== -1) {
+        locs[idx].name = newName;
+      } else {
+        locs.push({ name: newName, description: '', languageISOCode: this.activeLang() });
+      }
+
+      const updated = { ...old, localizations: locs };
+
+      this.onSave.emit(updated);
+      return updated;
     });
   }
 
   updatePrice(newPrice: string | number) {
-    this.formData.update((old) => ({ ...old, price: newPrice }));
+    this.formData.update((old) => {
+      const updated = { ...old, price: Number(newPrice) };
+      this.onSave.emit(updated);
+      return updated;
+    });
   }
 
   updateDescription(newDesc: string) {
@@ -148,12 +109,14 @@ export class ProductForm {
       const locs = old.localizations.map((l) =>
         l.languageISOCode === this.activeLang() ? { ...l, description: newDesc } : l,
       );
-      return { ...old, localizations: locs };
+      const updated = { ...old, localizations: locs };
+      this.onSave.emit(updated);
+      return updated;
     });
   }
 
   submitForm() {
-    this.onSave.emit(this.formData());
+    this.onSubmitForm.emit();
   }
 
   addSize(): void {
@@ -161,18 +124,23 @@ export class ProductForm {
       const newSize: CreateProductSizeModel = {
         localizations: [{ name: 'Новый размер', languageISOCode: 'ru' }],
       };
-
-      return {
+      const updated = {
         ...state,
         sizes: [...state.sizes, newSize],
       };
+      this.onSave.emit(updated);
+      return updated;
     });
   }
 
   removeSize(index: number): void {
-    this.formData.update((state) => ({
-      ...state,
-      sizes: state.sizes.filter((_, i) => i !== index),
-    }));
+    this.formData.update((state) => {
+      const updated = {
+        ...state,
+        sizes: state.sizes.filter((_, i) => i !== index),
+      };
+      this.onSave.emit(updated);
+      return updated;
+    });
   }
 }

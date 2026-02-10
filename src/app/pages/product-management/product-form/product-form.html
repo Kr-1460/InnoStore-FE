@@ -24,8 +24,8 @@
       [activeColorId]="selectedColorId()"
       (colorSelect)="onColorChanged($event)"
       (colorAdded)="onColorAdded($event)"
-      (removeColor)="removeColor($event)"
-      (colorChanged)="handleColorUpdate($event)"
+      (removeColor)="onColorRemoved($event)"
+      (colorChanged)="onColorUpdated($event)"
     />
 
     <app-product-size-section

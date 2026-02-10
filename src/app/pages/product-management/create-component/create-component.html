@@ -1,11 +1,22 @@
 <main class="flex gap-4 justify-between">
   <app-image-grid
     class="w-full"
-    [images]="images()"
+    [images]="currentImages()"
     (onRemove)="removeImage($event)"
     (onAdd)="addImage($event)"
     (onOrderChange)="updateImageOrder($event)"
   />
 
-  <app-product-form class="w-full" [initialData]="productData()" (onSave)="saveProduct($event)" />
+  <app-product-form
+    class="w-full"
+    [initialData]="activeProductData()"
+    [addedColors]="addedColors()"
+    [selectedColorId]="selectedColorId()"
+    (colorAdded)="onColorAdded($event)"
+    (colorChanged)="onColorChanged($event)"
+    (colorRemoved)="removeColor($event)"
+    (colorUpdated)="handleColorUpdate($event)"
+    (onSave)="handleFormUpdate($event)"
+    (onSubmitForm)="saveProduct()"
+  />
 </main>

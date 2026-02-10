@@ -14,7 +14,7 @@ export class ProductColorSection {
 
   // Весь справочник системных цветов для выбора
   systemColors = input<SystemColor[]>([
-    // --- БАЗОВЫЕ И СЕРЫЕ ---
+    { id: '0', name: 'Прозрачный', hex: '#00000000' },
     { id: '1', name: 'Черный (Black)', hex: '#000000' },
     { id: '2', name: 'Белый (White)', hex: '#FFFFFF' },
     { id: '3', name: 'Серый (Grey)', hex: '#808080' },
