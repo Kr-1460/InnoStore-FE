@@ -1,0 +1,18 @@
+<div
+  class="relative aspect-square bg-gray-50 rounded-lg border-2 border-dashed border-blue-200 overflow-hidden group"
+>
+  <img [src]="src()" class="w-full h-full object-cover" />
+
+  <div
+    class="absolute top-2 left-2 p-1 bg-white/80 rounded shadow-sm opacity-0 group-hover:opacity-100 transition-opacity cursor-move"
+  >
+    <ng-icon name="bootstrapGripVertical" />
+  </div>
+
+  <button
+    (click)="onRemove()"
+    class="absolute top-2 right-2 p-1 bg-white/80 rounded shadow-sm opacity-0 group-hover:opacity-100 transition-opacity text-red-500"
+  >
+    <ng-icon name="bootstrapTrash" />
+  </button>
+</div>

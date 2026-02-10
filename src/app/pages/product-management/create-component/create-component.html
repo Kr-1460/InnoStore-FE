@@ -1,0 +1,11 @@
+<main class="flex gap-4 justify-between">
+  <app-image-grid
+    class="w-full"
+    [images]="images()"
+    (onRemove)="removeImage($event)"
+    (onAdd)="addImage($event)"
+    (onOrderChange)="updateImageOrder($event)"
+  />
+
+  <app-product-form class="w-full" [initialData]="productData()" (onSave)="saveProduct($event)" />
+</main>

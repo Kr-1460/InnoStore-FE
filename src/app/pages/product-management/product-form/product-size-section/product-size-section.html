@@ -1,0 +1,23 @@
+<section class="py-6 border-t border-gray-100">
+  <div class="flex items-center justify-between mb-6">
+    <span class="text-lg font-semibold">Размеры в системе</span>
+    <span class="text-xs text-gray-400">Кол-во: {{ sizes().length }}</span>
+  </div>
+
+  <div class="flex flex-wrap gap-3 items-center">
+    @for (sizeItem of sizes(); track $index) {
+      <app-inno-store-chip
+        [name]="sizeItem.localizations[0]?.name"
+        (remove)="removeSize.emit($index)"
+      />
+    }
+
+    <button
+      (click)="addSize.emit()"
+      type="button"
+      class="w-10 h-10 flex items-center justify-center bg-gray-100 text-gray-600 rounded-full hover:bg-blue-600 hover:text-white transition-all"
+    >
+      <span class="text-xl">+</span>
+    </button>
+  </div>
+</section>

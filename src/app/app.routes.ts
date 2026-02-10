@@ -3,6 +3,7 @@ import { MainLayout } from './layouts/main-layout/main-layout';
 import { Products } from './pages/products/products';
 import { ProductDetail } from './pages/product-detail/product-detail';
 import { Profile } from './pages/profile/profile';
+import { CreateComponent } from './pages/product-management/create-component/create-component';
 
 export const routes: Routes = [
   {
@@ -21,6 +22,10 @@ export const routes: Routes = [
       {
         path: 'product/:id',
         component: ProductDetail,
+      },
+      {
+        path: 'products/create',
+        component: CreateComponent,
       },
     ],
   },

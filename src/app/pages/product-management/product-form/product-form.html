@@ -1,0 +1,46 @@
+<div class="w-full flex flex-col h-full bg-white rounded-2xl shadow-sm overflow-hidden">
+  <div class="p-8 grow overflow-y-auto">
+    <div class="flex justify-between items-start mb-8">
+      <h1 class="text-3xl font-bold text-gray-900">Добавление товара</h1>
+
+      <app-inno-store-switcher
+        [options]="languageOptions()"
+        [active]="activeLang()"
+        (select)="activeLang.set($event)"
+      />
+    </div>
+
+    <app-product-content-section
+      [name]="currentLocalization().name"
+      [price]="formData().price"
+      [description]="currentLocalization().description"
+      (nameChange)="updateName($event)"
+      (priceChange)="updatePrice($event)"
+      (descriptionChange)="updateDescription($event)"
+    />
+
+    <app-product-color-section
+      [selectedColors]="addedColors()"
+      [activeColorId]="selectedColorId()"
+      (colorSelect)="onColorChanged($event)"
+      (colorAdded)="onColorAdded($event)"
+      (removeColor)="removeColor($event)"
+      (colorChanged)="handleColorUpdate($event)"
+    />
+
+    <app-product-size-section
+      [sizes]="formData().sizes"
+      (addSize)="addSize()"
+      (removeSize)="removeSize($event)"
+    />
+  </div>
+
+  <div class="p-6 border-t border-gray-50">
+    <button
+      (click)="submitForm()"
+      class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-all shadow-lg shadow-blue-200 active:scale-[0.98]"
+    >
+      Сохранить товар
+    </button>
+  </div>
+</div>

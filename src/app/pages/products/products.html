@@ -5,6 +5,18 @@
   </h1>
 </div>
 
+<div class="mb-6">
+  <a
+    routerLink="/products/create"
+    class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-lg transition-colors inline-flex items-center gap-2"
+  >
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+    </svg>
+    Add Product
+  </a>
+</div>
+
 <div class="filters">
   @for (category of categories(); track category) {
     <button
@@ -20,7 +32,6 @@
 <div class="products-grid">
   @for (product of filteredProducts(); track product.id) {
     <a [routerLink]="['/product', product.id]" class="product-card">
-      
       <div class="product-image">
         @if (product.imageUrl) {
           <img [src]="product.imageUrl" [alt]="product.name" class="card-img" />
@@ -31,13 +42,10 @@
 
       <div class="product-price">{{ product.price }} P</div>
       <div class="product-name">{{ product.name }}</div>
-      
     </a>
   }
-  
+
   @if (filteredProducts().length === 0) {
-    <div class="no-products">
-      Нет товаров в этой категории
-    </div>
+    <div class="no-products">Нет товаров в этой категории</div>
   }
 </div>

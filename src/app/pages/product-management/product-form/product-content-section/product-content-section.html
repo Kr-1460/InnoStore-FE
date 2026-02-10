@@ -1,0 +1,28 @@
+<section class="mb-10">
+  <h3 class="text-lg font-semibold mb-4">Контент</h3>
+  <div class="flex flex-col gap-4">
+    <div class="flex gap-4 h-full">
+      <app-inno-store-input
+        class="grow"
+        label="Название товара"
+        [value]="name()"
+        (valueChange)="nameChange.emit($event)"
+        placeholder="Введите название..."
+      />
+      <app-inno-store-input
+        class="w-32"
+        label="Стоимость"
+        type="number"
+        [value]="price()"
+        (valueChange)="priceChange.emit($event)"
+      />
+    </div>
+    <app-inno-store-input
+      label="Описание товара"
+      [value]="description()"
+      (valueChange)="descriptionChange.emit($event)"
+      placeholder="Расскажите о товаре..."
+      [isMultiline]="true"
+    />
+  </div>
+</section>

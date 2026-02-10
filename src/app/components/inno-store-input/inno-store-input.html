@@ -1,0 +1,26 @@
+<div
+  [class]="
+    'relative bg-gray-50 rounded-xl p-4 border border-transparent focus-within:border-blue-500 transition-all ' +
+    class()
+  "
+>
+  <label class="block text-xs text-gray-400 mb-1">{{ label() }}</label>
+
+  @if (isMultiline()) {
+    <textarea
+      [ngModel]="value()"
+      (ngModelChange)="valueChange.emit($event)"
+      [placeholder]="placeholder()"
+      rows="4"
+      class="w-full bg-transparent outline-none text-gray-700 font-medium resize-none min-h-25"
+    ></textarea>
+  } @else {
+    <input
+      [type]="type()"
+      [ngModel]="value()"
+      (ngModelChange)="valueChange.emit($event)"
+      [placeholder]="placeholder()"
+      class="w-full bg-transparent outline-none text-gray-700 font-medium"
+    />
+  }
+</div>

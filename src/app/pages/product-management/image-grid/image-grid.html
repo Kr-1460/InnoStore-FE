@@ -1,0 +1,25 @@
+<div
+  class="w-full grid grid-cols-4 gap-4 p-6 border-2 border-blue-400 rounded-xl bg-white h-fit"
+  cdkDropList
+  cdkDropListOrientation="mixed"
+  (cdkDropListDropped)="drop($event)"
+>
+  @for (imgUrl of images(); track imgUrl) {
+    <div cdkDrag class="cursor-move">
+      <div
+        *cdkDragPlaceholder
+        class="bg-gray-100 rounded-lg aspect-square border-2 border-dotted border-blue-300"
+      ></div>
+
+      <app-image-tile [src]="imgUrl" [index]="$index" (remove)="onRemove.emit($event)" />
+    </div>
+  }
+
+  <input type="file" #fileInput class="hidden" accept="image/*" (change)="onFileSelected($event)" />
+  <button
+    (click)="fileInput.click()"
+    class="aspect-square flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-lg hover:bg-gray-50 transition-colors group"
+  >
+    <span class="text-3xl text-gray-300 group-hover:text-blue-500">+</span>
+  </button>
+</div>

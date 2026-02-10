@@ -1,0 +1,21 @@
+<div class="py-6 border-t border-gray-100">
+  <div class="flex items-center justify-between mb-4">
+    <span class="text-lg font-semibold">Цвет</span>
+    <span class="text-sm text-gray-400 font-medium uppercase">
+      {{ availableColors().length }} доступно
+    </span>
+  </div>
+
+  <div class="flex flex-wrap gap-3">
+    @for (color of availableColors(); track color.id) {
+      <button
+        type="button"
+        (click)="selectColor(color)"
+        [class.ring-2]="selectedColorId() === color.id"
+        class="w-10 h-10 rounded-full border-2 border-white shadow-md transition-all hover:scale-110 ring-blue-500 ring-offset-2"
+        [style.backgroundColor]="color.hex"
+        [title]="color.name"
+      ></button>
+    }
+  </div>
+</div>

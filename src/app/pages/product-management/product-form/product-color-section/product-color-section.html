@@ -1,0 +1,97 @@
+<div class="py-6 border-t border-gray-100">
+  <div class="flex flex-col mb-4">
+    <span class="text-lg font-semibold text-gray-900">Цвета модели</span>
+    <span class="text-xs text-gray-400 font-medium"
+      >Каждый цвет имеет свой набор фото. Наведите для управления.</span
+    >
+  </div>
+
+  <div class="flex flex-wrap gap-4 items-center">
+    @for (color of selectedColors(); track color.id) {
+      <div class="relative group">
+        @if (editingColorId() === color.id) {
+          <div class="animate-in fade-in zoom-in-95 duration-200">
+            <app-inno-store-combobox
+              [options]="systemColors()"
+              [alreadySelected]="selectedColors()"
+              labelKey="name"
+              colorKey="hex"
+              placeholder="Заменить на..."
+              (select)="onSelectReplacement($event)"
+              (close)="editingColorId.set(null)"
+            />
+          </div>
+        } @else {
+          <button
+            (click)="removeColor.emit(color); $event.stopPropagation()"
+            class="absolute -top-1 -right-1 z-20 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-sm hover:bg-red-600"
+            title="Удалить цвет"
+          >
+            <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" />
+            </svg>
+          </button>
+
+          <button
+            (click)="startEdit(color); $event.stopPropagation()"
+            class="absolute -bottom-1 -right-1 z-20 bg-blue-500 text-white rounded-full w-4 h-4 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-sm hover:bg-blue-600"
+            title="Изменить цвет"
+          >
+            <svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
+              />
+            </svg>
+          </button>
+
+          <button
+            type="button"
+            (click)="colorSelect.emit(color)"
+            [class.ring-2]="activeColorId() === color.id"
+            class="w-10 h-10 rounded-full border border-black/10 shadow-sm transition-all hover:scale-105 ring-blue-500 ring-offset-2 overflow-hidden relative"
+            [style.backgroundColor]="color.hex"
+          >
+            <div
+              class="absolute inset-0 bg-gradient-to-tr from-black/5 to-transparent pointer-events-none"
+            ></div>
+          </button>
+
+          <span
+            class="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 pointer-events-none"
+          >
+            {{ color.name }}
+          </span>
+        }
+      </div>
+    }
+
+    <div class="relative flex items-center">
+      @if (!isSelecting()) {
+        <button
+          type="button"
+          (click)="toggleSelection()"
+          class="w-10 h-10 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center text-gray-400 hover:border-blue-500 hover:text-blue-500 hover:bg-blue-50 transition-all shadow-sm"
+        >
+          <span class="text-xl font-light">+</span>
+        </button>
+      } @else {
+        <div class="flex items-center gap-2 animate-in fade-in slide-in-from-left-2 duration-200">
+          <app-inno-store-combobox
+            [options]="systemColors()"
+            [alreadySelected]="selectedColors()"
+            labelKey="name"
+            colorKey="hex"
+            placeholder="Выберите новый цвет..."
+            (select)="onSelectNewColor($event)"
+            (close)="isSelecting.set(false)"
+          />
+          <button (click)="isSelecting.set(false)" class="text-gray-400 hover:text-red-500 p-1">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path d="M6 18L18 6M6 6l12 12" stroke-width="2" stroke-linecap="round" />
+            </svg>
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+</div>
