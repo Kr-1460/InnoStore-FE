@@ -1,12 +1,12 @@
 <div class="title-section">
   <h1 class="page-title">
-    Товары за баллы<sup class="product-count">{{ productsCount }}</sup>
+    Товары за баллы
+    <sup class="product-count">{{ filteredProducts().length }}</sup>
   </h1>
 </div>
 
-<!-- Category Filters -->
 <div class="filters">
-  @for (category of categories; track category) {
+  @for (category of categories(); track category) {
     <button
       class="filter-btn"
       [class.active]="selectedCategory() === category"
@@ -17,18 +17,27 @@
   }
 </div>
 
-<!-- Products Grid -->
 <div class="products-grid">
-  @for (product of filteredProducts; track product.id) {
+  @for (product of filteredProducts(); track product.id) {
     <a [routerLink]="['/product', product.id]" class="product-card">
+      
       <div class="product-image">
-        <div class="image-placeholder" [class]="'image-' + product.image"></div>
+        @if (product.imageUrl) {
+          <img [src]="product.imageUrl" [alt]="product.name" class="card-img" />
+        } @else {
+          <div class="image-placeholder default-placeholder"></div>
+        }
       </div>
+
       <div class="product-price">{{ product.price }} P</div>
       <div class="product-name">{{ product.name }}</div>
-      <div class="product-status" [class.in-stock]="product.inStock" [class.out-of-stock]="!product.inStock">
-        {{ product.inStock ? 'В наличии' : 'Нет в наличии' }}
-      </div>
+      
     </a>
+  }
+  
+  @if (filteredProducts().length === 0) {
+    <div class="no-products">
+      Нет товаров в этой категории
+    </div>
   }
 </div>

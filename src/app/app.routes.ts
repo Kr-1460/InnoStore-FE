@@ -8,7 +8,7 @@ export const routes: Routes = [
   {
     path: '',
     redirectTo: '/products',
-    pathMatch: 'full'
+    pathMatch: 'full',
   },
   {
     path: '',
@@ -16,16 +16,16 @@ export const routes: Routes = [
     children: [
       {
         path: 'products',
-        component: Products
+        component: Products,
       },
       {
         path: 'product/:id',
-        component: ProductDetail
-      }
-    ]
+        component: ProductDetail,
+      },
+    ],
   },
   {
     path: 'profile',
-    component: Profile
-  }
+    component: Profile,
+  },
 ];
