@@ -1,6 +1,10 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable } from "rxjs";
 
+export enum UserRole {
+  Editor = 'Editor'
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -30,6 +34,6 @@ export class UserService {
   }
 
   public hasEditorPermission(): boolean {
-    return this.permissionsSubject$$.value?.includes('Editor') ?? false
+    return this.permissionsSubject$$.value?.includes(UserRole.Editor) ?? false
   }
 }

@@ -1,7 +1,7 @@
 import { Component, signal, input, output, computed, Inject, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { AuthService, User } from '@auth0/auth0-angular'; // Импорт типов и сервиса
+import { AuthService, User } from '@auth0/auth0-angular';
 import { ChevronRightIcon } from '../icons/chevron-right-icon/chevron-right-icon';
 import { ArrowUpIcon } from '../icons/arrow-up-icon/arrow-up-icon';
 import { ArrowDownIcon } from '../icons/arrow-down-icon/arrow-down-icon';
