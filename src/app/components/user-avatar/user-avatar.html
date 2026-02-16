@@ -1,9 +1,19 @@
-<div class="user-info">
+<div class="user-info" *ngIf="user$ | async as user">
   <div class="points-badge">
     <span class="points">{{ userPoints() }} P</span>
   </div>
+  
   <button class="profile-link" (click)="openModal($event)" type="button" aria-label="Open profile">
-    <div class="profile-avatar"></div>
+    @if (user.picture) {
+      <img [src]="user.picture" class="profile-avatar" alt="Avatar">
+    } @else {
+      <div class="profile-avatar placeholder"></div>
+    }
   </button>
-  <app-transactions-modal [isOpen]="isModalOpen()" (closeModal)="closeModal()" />
+
+  <app-transactions-modal 
+    [isOpen]="isModalOpen()" 
+    [userDetails]="user"
+    (closeModal)="closeModal()" 
+  />
 </div>

@@ -8,28 +8,13 @@
   padding: 24px;
   width: 400px;
   max-height: 70vh;
-  overflow-y: auto;
-  overflow-x: hidden;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   z-index: 1000;
-  
-  &::-webkit-scrollbar {
-    width: 6px;
-  }
 
-  &::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 3px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: #c1c1c1;
-    border-radius: 3px;
-
-    &:hover {
-      background: #a8a8a8;
-    }
-  }
+  // --- Flexbox настройки для фиксации шапки и футера ---
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; // Убираем скролл с главной обертки
 }
 
 .user-info-section {
@@ -39,6 +24,7 @@
   margin-bottom: 24px;
   padding-bottom: 20px;
   border-bottom: 1px solid #E1E1E1;
+  flex-shrink: 0; // Запрещаем сжиматься шапке
 }
 
 .user-details {
@@ -87,6 +73,31 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
+  
+  // --- Настройки скролла списка транзакций ---
+  flex: 1;              // Занимает все доступное место
+  overflow-y: auto;     // Включаем вертикальный скролл
+  min-height: 0;        // Важно для Firefox и вложенных флексов
+  padding-right: 4px;   // Отступ, чтобы скроллбар не прилипал
+
+  // Переносим стили скроллбара сюда
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+
+    &:hover {
+      background: #a8a8a8;
+    }
+  }
 }
 
 .transactions-title {
@@ -115,26 +126,26 @@
   }
 }
 
-  .transaction-icon {
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
+.transaction-icon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 
-    &.income {
-      app-arrow-up-icon {
-        --icon-color: #00aa00;
-      }
-    }
-
-    &.expense {
-      app-arrow-down-icon {
-        --icon-color: #ff0000;
-      }
+  &.income {
+    app-arrow-up-icon {
+      --icon-color: #00aa00;
     }
   }
+
+  &.expense {
+    app-arrow-down-icon {
+      --icon-color: #ff0000;
+    }
+  }
+}
 
 .transaction-details {
   flex: 1;
@@ -160,6 +171,37 @@
 
   &.expense {
     color: #ff0000;
+  }
+}
+
+// Разделитель и кнопка выхода (фиксированные внизу)
+.logout-divider {
+  height: 1px;
+  background-color: #E1E1E1;
+  margin: 20px 0 12px 0;
+  flex-shrink: 0;
+}
+
+.logout-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #dc3545;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+
+  &:hover {
+    background-color: #fff5f5;
+    color: #c82333;
+  }
+
+  i {
+    font-size: 16px;
   }
 }
 
@@ -223,6 +265,10 @@
 
   .transaction-amount {
     font-size: 13px;
+  }
+
+  .logout-section {
+    padding: 10px;
   }
 }
 

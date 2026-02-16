@@ -1,6 +1,7 @@
-import { Component, signal, input, output } from '@angular/core';
+import { Component, signal, input, output, computed, Inject, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { AuthService, User } from '@auth0/auth0-angular'; // Импорт типов и сервиса
 import { ChevronRightIcon } from '../icons/chevron-right-icon/chevron-right-icon';
 import { ArrowUpIcon } from '../icons/arrow-up-icon/arrow-up-icon';
 import { ArrowDownIcon } from '../icons/arrow-down-icon/arrow-down-icon';
@@ -15,17 +16,22 @@ interface Transaction {
 
 @Component({
   selector: 'app-transactions-modal',
+  standalone: true,
   imports: [CommonModule, RouterLink, ChevronRightIcon, ArrowUpIcon, ArrowDownIcon],
   templateUrl: './transactions-modal.html',
   styleUrl: './transactions-modal.scss',
 })
 export class TransactionsModal {
   isOpen = input.required<boolean>();
+  userDetails = input<User | null | undefined>(null);
+  
   closeModal = output<void>();
 
-  protected readonly userName = signal('Марков Константин');
-  protected readonly userTitle = signal('Power Platform developer');
-  
+  private authService = inject(AuthService);
+
+  protected readonly userName = computed(() => this.userDetails()?.name || 'Пользователь');
+  protected readonly userTitle = computed(() => this.userDetails()?.email || '');
+
   protected readonly transactions = signal<Transaction[]>([
     {
       id: 1,
@@ -35,43 +41,65 @@ export class TransactionsModal {
       date: '2024-01-15'
     },
     {
-      id: 2,
-      description: 'Прохождение профессионального курса',
-      amount: 50,
-      type: 'income',
-      date: '2024-01-10'
+        id: 2,
+        description: 'Прохождение профессионального курса',
+        amount: 50,
+        type: 'income',
+        date: '2024-01-10'
     },
     {
-      id: 3,
-      description: 'Организация мероприятия',
-      amount: 40,
-      type: 'income',
-      date: '2024-01-05'
+        id: 3,
+        description: 'Организация мероприятия',
+        amount: 40,
+        type: 'income',
+        date: '2024-01-05'
     },
-    {
-      id: 4,
-      description: 'Подарок на День Рождения',
-      amount: 25,
-      type: 'income',
-      date: '2023-12-28'
+        {
+        id: 3,
+        description: 'Организация мероприятия',
+        amount: 40,
+        type: 'income',
+        date: '2024-01-05'
     },
-    {
-      id: 5,
-      description: 'Новогодний бонус',
-      amount: 30,
-      type: 'income',
-      date: '2023-12-25'
+        {
+        id: 3,
+        description: 'Организация мероприятия',
+        amount: 40,
+        type: 'income',
+        date: '2024-01-05'
     },
-    {
-      id: 6,
-      description: 'Покупка толстовки лимитированной серии дизайн 2026 года',
-      amount: 200,
-      type: 'expense',
-      date: '2023-12-20'
-    }
+        {
+        id: 3,
+        description: 'Организация мероприятия',
+        amount: 40,
+        type: 'income',
+        date: '2024-01-05'
+    },
+        {
+        id: 3,
+        description: 'Организация мероприятия',
+        amount: 40,
+        type: 'income',
+        date: '2024-01-05'
+    },
+        {
+        id: 3,
+        description: 'Организация мероприятия',
+        amount: 40,
+        type: 'income',
+        date: '2024-01-05'
+    },
   ]);
 
   protected onCloseClick(): void {
     this.closeModal.emit();
+  }
+
+  protected logout(): void {
+    this.authService.logout({ 
+      logoutParams: { 
+        returnTo: window.location.origin 
+      } 
+    });
   }
 }
