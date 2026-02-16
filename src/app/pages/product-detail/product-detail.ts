@@ -1,8 +1,9 @@
-import { Component, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { Product } from '../../models/product.interface';
 import { CloseIcon } from '../../components/icons/close-icon/close-icon';
+import { ProductService } from '../../core/generated/services'; // Check your import path
+import { ProductDTO } from '../../core/generated/models'; // Check your import path
 
 @Component({
   selector: 'app-product-detail',
@@ -11,92 +12,65 @@ import { CloseIcon } from '../../components/icons/close-icon/close-icon';
   styleUrl: './product-detail.scss',
 })
 export class ProductDetail {
+  private route = inject(ActivatedRoute);
+  private productService = inject(ProductService);
+
+  // Signals
+  protected readonly product = signal<ProductDTO | null>(null);
   protected readonly selectedImageIndex = signal(0);
-  protected readonly selectedSize = signal<string | null>(null);
-  protected readonly selectedColor = signal<string | null>(null);
-  protected readonly product = signal<Product | null>(null);
+  protected readonly selectedSizeId = signal<string | null>(null);
 
-  constructor(private route: ActivatedRoute) {
+  ngOnInit() {
     const productId = this.route.snapshot.paramMap.get('id');
-    this.loadProduct(Number(productId));
+    if (productId) {
+      this.loadProduct(productId);
+    }
   }
 
-  private loadProduct(id: number): void {
-    const mockProducts: Record<number, Product> = {
-      1: {
-        id: 1,
-        name: 'Толстовка лимитированная',
-        fullName: 'Толстовка лимитированной серии дизайн 2026 года',
-        price: 120,
-        image: 'sweatshirt',
-        images: ['sweatshirt', 'sweatshirt', 'sweatshirt', 'sweatshirt'],
-        inStock: true,
-        category: 'Одежда',
-        sizes: [
-          { label: 'S', value: '46' },
-          { label: 'M', value: '48' },
-          { label: 'L', value: '50' },
-          { label: 'XL', value: '52' },
-          { label: '2XL', value: '54' }
-        ],
-        colors: [
-          { id: 'black', name: 'Черный', image: 'sweatshirt' },
-          { id: 'black2', name: 'Черный', image: 'sweatshirt' },
-          { id: 'black3', name: 'Черный', image: 'sweatshirt' },
-          { id: 'black4', name: 'Черный', image: 'sweatshirt' }
-        ]
+  private loadProduct(id: string): void {
+    this.productService.getProductById(id, 'en').subscribe({
+      next: (data) => {
+        this.product.set(data);
+        this.initDefaults(data);
       },
-      4: {
-        id: 4,
-        name: 'Бутылка',
-        fullName: 'Бутылка для воды innowise',
-        price: 100,
-        image: 'bottle',
-        images: ['bottle', 'bottle', 'bottle', 'bottle'],
-        inStock: true,
-        category: 'Бутылки',
-        sizes: [
-          { label: 'Один размер', value: 'one-size' }
-        ],
-        colors: [
-          { id: 'white', name: 'Белый', image: 'bottle' }
-        ]
-      }
-    };
-
-    const product = mockProducts[id] || mockProducts[1];
-    this.product.set(product);
-    
-    if (product.sizes.length > 0) {
-      this.selectedSize.set(product.sizes[0].value);
-    }
-    if (product.colors.length > 0) {
-      this.selectedColor.set(product.colors[0].id);
-    }
+      error: (err) => console.error('Failed to load product', err),
+    });
   }
 
+  private initDefaults(product: ProductDTO): void {
+    if (product.sizes && product.sizes.length > 0) {
+      this.selectedSizeId.set(product.sizes[0].id || null);
+    }
+
+    this.selectedImageIndex.set(0);
+  }
   protected selectImage(index: number): void {
     this.selectedImageIndex.set(index);
   }
 
-  protected selectSize(sizeValue: string): void {
-    this.selectedSize.set(sizeValue);
+  protected selectSize(sizeId: string): void {
+    this.selectedSizeId.set(sizeId);
   }
 
-  protected selectColor(colorId: string): void {
-    this.selectedColor.set(colorId);
-  }
+  // protected selectColor(colorId: string): void {
+  //   this.selectedColor.set(colorId);
+  // }
 
-  protected get showSizes(): boolean {
+  protected currentImageUrl = computed(() => {
     const product = this.product();
-    return product ? product.sizes.length > 1 : false;
-  }
+    const index = this.selectedImageIndex();
+
+    if (!product?.images || product.images.length === 0) return null;
+
+    // Handle bounds check safely
+    return product.images[index]?.imageUrl || product.images[0].imageUrl;
+  });
 
   protected placeOrder(): void {
-    console.log('Оформление заказа', {
-      product: this.product(),
-      size: this.selectedSize(),
-      color: this.selectedColor()
+    console.log('Placing order:', {
+      productId: this.product()?.id,
+      sizeId: this.selectedSizeId(),
+      // color: this.selectedColor() // Disabled until backend supports it
     });
   }
 }

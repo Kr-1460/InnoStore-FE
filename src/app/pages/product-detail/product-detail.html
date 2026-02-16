@@ -12,59 +12,56 @@
             [class.active]="selectedImageIndex() === $index"
             (click)="selectImage($index)"
           >
-            <div class="thumbnail-placeholder" [class]="'image-' + image"></div>
+            <img [src]="image.imageUrl" alt="Product thumbnail" class="thumbnail-img">
           </div>
         }
       </div>
+
       <div class="main-image">
-        <div class="main-image-placeholder" [class]="'image-' + productData.images[selectedImageIndex()]"></div>
+         @if (productData.images && productData.images.length > 0) {
+           <img 
+             [src]="productData.images[selectedImageIndex()]?.imageUrl" 
+             alt="Main product image"
+             class="main-img-display"
+           >
+         }
       </div>
     </div>
 
     <div class="product-details">
-      <h1 class="product-title">{{ productData.fullName }}</h1>
+      <h1 class="product-title">{{ productData.name }}</h1>
       
-      <div class="product-availability" [class.in-stock]="productData.inStock">
-        {{ productData.inStock ? 'В наличии' : 'Нет в наличии' }}
+      <div class="product-availability in-stock">
+        В наличии
       </div>
 
       <div class="product-price">{{ productData.price }} P</div>
 
-      <div class="selection-group">
-        <label class="selection-label">Цвет</label>
-        <div class="color-options">
-          @for (color of productData.colors; track color.id) {
-            <div
-              class="color-option"
-              [class.active]="selectedColor() === color.id"
-              (click)="selectColor(color.id)"
-            >
-              <div class="color-placeholder" [class]="'image-' + color.image"></div>
-            </div>
-          }
-        </div>
-      </div>
-
-      @if (showSizes) {
+      @if (productData.sizes && productData.sizes.length > 0) {
         <div class="selection-group">
           <label class="selection-label">Размер</label>
           <div class="size-options">
-            @for (size of productData.sizes; track size.value) {
+            @for (size of productData.sizes; track size.id) {
               <button
                 class="size-option"
-                [class.active]="selectedSize() === size.value"
-                (click)="selectSize(size.value)"
+                [class.active]="selectedSizeId() === size.id"
+                (click)="selectSize(size.id!)"
               >
-                {{ size.label }} ({{ size.value }})
+                {{ size.size }}
               </button>
             }
           </div>
         </div>
       }
 
-      <button class="order-button" (click)="placeOrder()" [disabled]="!productData.inStock">
+      <button class="order-button" (click)="placeOrder()">
         Оформить заказ
       </button>
+      
+      <div class="product-description">
+         {{ productData.description }}
+      </div>
+
     </div>
   </div>
 }
