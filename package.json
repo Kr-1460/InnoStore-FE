@@ -8,8 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:InnoStore-FE": "node dist/InnoStore-FE/server/server.mjs",
-    "generate:api": "ng-openapi -c openapi.config.ts",
-    "prebuild": "npm run generate:api"
+    "generate:api": "ng-openapi -c openapi.config.ts"
   },
   "prettier": {
     "printWidth": 100,

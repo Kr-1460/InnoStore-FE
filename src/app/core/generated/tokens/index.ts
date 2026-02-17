@@ -6,7 +6,7 @@ import { HttpInterceptor, HttpContextToken } from "@angular/common/http";
  */
 export const BASE_PATH_INNOSTORE = new InjectionToken<string>('BASE_PATH_INNOSTORE', {
     providedIn: 'root',
-    factory: () => '/api', // Default fallback
+    factory: () => '',
 });
 /**
  * Injection token for the InnoStore client HTTP interceptor instances
