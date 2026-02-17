@@ -73,3 +73,31 @@
     height: 32px;
   }
 }
+
+.profile-link {
+  text-decoration: none;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  display: flex;
+  align-items: center;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.profile-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #e5e5e5;
+  border: 1px solid #d0d0d0;
+  object-fit: cover;
+  
+  &.placeholder {
+    background: #e5e5e5;
+  }
+}

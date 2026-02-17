@@ -1,9 +1,11 @@
-import { Component, signal, effect, Inject, PLATFORM_ID, input } from '@angular/core';
+import { Component, signal, effect, Inject, PLATFORM_ID, input, inject } from '@angular/core'; // Добавил inject
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { TransactionsModal } from '../transactions-modal/transactions-modal';
+import { AuthService } from '@auth0/auth0-angular';
 
 @Component({
   selector: 'app-user-avatar',
+  standalone: true,
   imports: [CommonModule, TransactionsModal],
   templateUrl: './user-avatar.html',
   styleUrl: './user-avatar.scss',
@@ -11,6 +13,10 @@ import { TransactionsModal } from '../transactions-modal/transactions-modal';
 export class UserAvatar {
   userPoints = input<number>(100);
   protected readonly isModalOpen = signal(false);
+  
+  private authService = inject(AuthService);
+  
+  protected user$ = this.authService.user$;
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {
     effect(() => {
