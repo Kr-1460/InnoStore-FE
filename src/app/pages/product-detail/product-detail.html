@@ -1,67 +1,126 @@
 @if (product(); as productData) {
-  <div class="product-container">
-    <a routerLink="/products" class="close-button" aria-label="Close">
-      <app-close-icon />
-    </a>
-    
-    <div class="product-images">
-      <div class="thumbnails">
-        @for (image of productData.images; track $index) {
-          <div
-            class="thumbnail"
-            [class.active]="selectedImageIndex() === $index"
-            (click)="selectImage($index)"
-          >
-            <img [src]="image.imageUrl" alt="Product thumbnail" class="thumbnail-img">
-          </div>
-        }
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 sm:p-6 overflow-y-auto"
+  >
+    <div
+      class="relative w-full max-w-5xl bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[90vh] md:h-auto"
+    >
+      <a
+        routerLink="/products"
+        class="absolute top-4 right-4 z-10 p-2 bg-white/80 hover:bg-white rounded-full text-gray-500 hover:text-gray-900 transition-colors shadow-sm cursor-pointer"
+        aria-label="Close"
+      >
+        <app-close-icon class="w-6 h-6" />
+      </a>
+
+      <div
+        class="w-full md:w-1/2 bg-gray-50 p-6 flex flex-col-reverse md:flex-row gap-4 h-[50vh] md:h-auto md:min-h-[600px]"
+      >
+        <div
+          class="flex md:flex-col gap-3 overflow-x-auto md:overflow-y-auto md:w-20 shrink-0 scrollbar-hide py-2 md:py-0"
+        >
+          @for (image of currentGallery(); track $index) {
+            <button
+              class="relative w-16 h-16 md:w-20 md:h-20 shrink-0 rounded-xl overflow-hidden border-2 transition-all duration-200"
+              [class.border-blue-600]="selectedImageIndex() === $index"
+              [class.ring-2]="selectedImageIndex() === $index"
+              [class.ring-blue-100]="selectedImageIndex() === $index"
+              [class.border-transparent]="selectedImageIndex() !== $index"
+              (click)="selectImage($index)"
+            >
+              <img [src]="image.imageUrl" alt="Thumbnail" class="w-full h-full object-cover" />
+            </button>
+          }
+        </div>
+
+        <div
+          class="flex-1 relative rounded-2xl overflow-hidden bg-white shadow-sm border border-gray-100 group"
+        >
+          @if (mainImageUrl()) {
+            <img
+              [src]="mainImageUrl()"
+              alt="Main product image"
+              class="w-full h-full object-contain p-4 transition-transform duration-500 group-hover:scale-105"
+            />
+          } @else {
+            <div class="w-full h-full flex items-center justify-center text-gray-400 bg-gray-100">
+              <span>No Image</span>
+            </div>
+          }
+        </div>
       </div>
 
-      <div class="main-image">
-         @if (productData.images && productData.images.length > 0) {
-           <img 
-             [src]="productData.images[selectedImageIndex()]?.imageUrl" 
-             alt="Main product image"
-             class="main-img-display"
-           >
-         }
-      </div>
-    </div>
+      <div class="w-full md:w-1/2 p-8 flex flex-col overflow-y-auto">
+        <div class="mb-6">
+          <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ productData.name }}</h1>
 
-    <div class="product-details">
-      <h1 class="product-title">{{ productData.name }}</h1>
-      
-      <div class="product-availability in-stock">
-        В наличии
-      </div>
-
-      <div class="product-price">{{ productData.price }} P</div>
-
-      @if (productData.sizes && productData.sizes.length > 0) {
-        <div class="selection-group">
-          <label class="selection-label">Размер</label>
-          <div class="size-options">
-            @for (size of productData.sizes; track size.id) {
-              <button
-                class="size-option"
-                [class.active]="selectedSizeId() === size.id"
-                (click)="selectSize(size.id!)"
-              >
-                {{ size.size }}
-              </button>
-            }
+          <div class="flex items-center gap-3 mb-4">
+            <span
+              class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"
+            >
+              In Stock
+            </span>
+            <span class="text-2xl font-bold text-gray-900">{{ productData.price }} ₽</span>
           </div>
         </div>
-      }
 
-      <button class="order-button" (click)="placeOrder()">
-        Оформить заказ
-      </button>
-      
-      <div class="product-description">
-         {{ productData.description }}
+        @if (availableColors().length > 0) {
+          <div class="mb-8">
+            <label class="block text-sm font-medium text-gray-700 mb-3">
+              Color: <span class="text-gray-900">{{ selectedColor()?.name }}</span>
+            </label>
+            <div class="flex flex-wrap gap-3">
+              @for (c of availableColors(); track c.id) {
+                <button
+                  class="w-8 h-8 rounded-full border border-gray-200 shadow-sm transition-transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  [class.ring-2]="selectedSystemColorId() === c.color"
+                  [class.ring-offset-2]="selectedSystemColorId() === c.color"
+                  [class.ring-blue-600]="selectedSystemColorId() === c.color"
+                  [style.background-color]="c.hex"
+                  [attr.title]="c.name"
+                  (click)="selectColor(c.color)"
+                ></button>
+              }
+            </div>
+          </div>
+        }
+
+        @if (productData.sizes && productData.sizes.length > 0) {
+          <div class="mb-8">
+            <label class="block text-sm font-medium text-gray-700 mb-3">Size</label>
+            <div class="grid grid-cols-4 gap-2">
+              @for (size of productData.sizes; track size.id) {
+                <button
+                  class="px-4 py-2.5 text-sm font-medium rounded-lg border transition-all duration-200"
+                  [class.bg-gray-900]="selectedSizeId() === size.id"
+                  [class.text-white]="selectedSizeId() === size.id"
+                  [class.border-gray-900]="selectedSizeId() === size.id"
+                  [class.bg-white]="selectedSizeId() !== size.id"
+                  [class.text-gray-900]="selectedSizeId() !== size.id"
+                  [class.border-gray-200]="selectedSizeId() !== size.id"
+                  [class.hover:border-gray-400]="selectedSizeId() !== size.id"
+                  (click)="selectSize(size.id!)"
+                >
+                  {{ size.size }}
+                </button>
+              }
+            </div>
+          </div>
+        }
+
+        <div class="mt-auto space-y-6">
+          <button
+            (click)="placeOrder()"
+            class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-lg shadow-blue-200 transition-all active:scale-[0.98]"
+          >
+            Add to Order
+          </button>
+
+          <div class="prose prose-sm text-gray-500 border-t pt-6">
+            <p>{{ productData.description }}</p>
+          </div>
+        </div>
       </div>
-
     </div>
   </div>
 }

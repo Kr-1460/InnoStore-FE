@@ -10,35 +10,38 @@
       />
     </div>
 
-    <app-product-content-section
-      [name]="currentLocalization().name"
-      [price]="formData().price"
-      [description]="currentLocalization().description"
-      (nameChange)="updateName($event)"
-      (priceChange)="updatePrice($event)"
-      (descriptionChange)="updateDescription($event)"
-    />
+    <form [formGroup]="productForm" class="contents">
+      <app-product-content-section
+        [parentForm]="productForm"
+        [categories]="categories() || []"
+        [activeLang]="activeLang()"
+      />
 
-    <app-product-color-section
-      [selectedColors]="addedColors()"
-      [activeColorId]="selectedColorId()"
-      (colorSelect)="onColorChanged($event)"
-      (colorAdded)="onColorAdded($event)"
-      (removeColor)="onColorRemoved($event)"
-      (colorChanged)="onColorUpdated($event)"
-    />
+      <app-product-color-section
+        [selectedColors]="addedColors()"
+        [activeColorId]="selectedColorId()"
+        (colorSelect)="onColorChanged($event)"
+        (colorAdded)="onColorAdded($event)"
+        (removeColor)="onColorRemoved($event)"
+        (colorChanged)="onColorUpdated($event)"
+      />
 
-    <app-product-size-section
-      [sizes]="formData().sizes"
-      (addSize)="addSize()"
-      (removeSize)="removeSize($event)"
-    />
+      <div class="mt-8 border-t border-gray-100 pt-8">
+        <app-product-size-section [parentForm]="productForm" [activeLang]="activeLang()" />
+      </div>
+    </form>
   </div>
 
-  <div class="p-6 border-t border-gray-50">
+  <div class="p-6 border-t border-gray-50 bg-gray-50/50">
     <button
-      (click)="submitForm()"
-      class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-all shadow-lg shadow-blue-200 active:scale-[0.98]"
+      (click)="submit()"
+      class="w-full py-4 font-semibold rounded-xl transition-all shadow-lg active:scale-[0.98] flex justify-center items-center gap-2"
+      [class.bg-blue-600]="productForm.valid && addedColors().length > 0"
+      [class.hover:bg-blue-700]="productForm.valid && addedColors().length > 0"
+      [class.bg-gray-200]="productForm.invalid || addedColors().length === 0"
+      [class.text-white]="productForm.valid && addedColors().length > 0"
+      [class.text-gray-500]="productForm.invalid || addedColors().length === 0"
+      [class.shadow-blue-200]="productForm.valid && addedColors().length > 0"
     >
       Сохранить товар
     </button>

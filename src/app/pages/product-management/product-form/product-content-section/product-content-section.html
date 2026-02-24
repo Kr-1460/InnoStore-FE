@@ -1,28 +1,62 @@
-<section class="mb-10">
-  <h3 class="text-lg font-semibold mb-4">Контент</h3>
+<section class="mb-10" [formGroup]="parentForm()">
+  <h3 class="text-lg font-semibold mb-4">Контент ({{ activeLang() | uppercase }})</h3>
+
   <div class="flex flex-col gap-4">
-    <div class="flex gap-4 h-full">
-      <app-inno-store-input
-        class="grow"
-        label="Название товара"
-        [value]="name()"
-        (valueChange)="nameChange.emit($event)"
-        placeholder="Введите название..."
+    <div class="flex flex-col gap-1 z-20">
+      <app-inno-store-combobox
+        [options]="uiCategories()"
+        labelKey="name"
+        placeholder="Выберите категорию..."
+        formControlName="productCategoryId"
       />
+
+      @if (isFieldInvalid('productCategoryId')) {
+        <span class="text-xs text-red-500 ml-1">Выберите категорию из списка</span>
+      }
+    </div>
+
+    @if (currentLocalizationGroup(); as locGroup) {
+      <div class="flex flex-col gap-4">
+        <div class="flex gap-4">
+          <div class="grow flex flex-col gap-1">
+            <app-inno-store-input
+              label="Название товара"
+              placeholder="Введите название..."
+              [value]="locGroup.get('name')?.value"
+              (valueChange)="locGroup.get('name')?.setValue($event)"
+              [class]="isLocFieldInvalid('name') ? 'border-red-500' : ''"
+            />
+
+            @if (isLocFieldInvalid('name')) {
+              <span class="text-xs text-red-500 ml-1">Название обязательно</span>
+            }
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <app-inno-store-input
+            label="Описание товара"
+            placeholder="Опишите товар..."
+            [isMultiline]="true"
+            [value]="locGroup.get('description')?.value"
+            (valueChange)="locGroup.get('description')?.setValue($event)"
+          />
+        </div>
+      </div>
+    }
+
+    <div class="w-32 flex flex-col gap-1">
       <app-inno-store-input
-        class="w-32"
         label="Стоимость"
         type="number"
-        [value]="price()"
-        (valueChange)="priceChange.emit($event)"
+        placeholder="0"
+        [value]="parentForm().get('price')?.value"
+        (valueChange)="parentForm().get('price')?.setValue($event)"
+        [class]="isFieldInvalid('price') ? 'border-red-500' : ''"
       />
+      @if (isFieldInvalid('price')) {
+        <span class="text-xs text-red-500 ml-1">Мин. 1</span>
+      }
     </div>
-    <app-inno-store-input
-      label="Описание товара"
-      [value]="description()"
-      (valueChange)="descriptionChange.emit($event)"
-      placeholder="Расскажите о товаре..."
-      [isMultiline]="true"
-    />
   </div>
 </section>

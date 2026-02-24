@@ -1,23 +1,62 @@
-<section class="py-6 border-t border-gray-100">
-  <div class="flex items-center justify-between mb-6">
-    <span class="text-lg font-semibold">Размеры в системе</span>
-    <span class="text-xs text-gray-400">Кол-во: {{ sizes().length }}</span>
+<section class="flex flex-col gap-4">
+  <div class="flex justify-between items-center mb-2">
+    <h3 class="text-lg font-semibold">Размеры</h3>
+    <button
+      type="button"
+      (click)="addSize()"
+      class="text-sm font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 px-3 py-1.5 rounded-lg transition-colors"
+    >
+      + Добавить размер
+    </button>
   </div>
 
-  <div class="flex flex-wrap gap-3 items-center">
-    @for (sizeItem of sizes(); track $index) {
-      <app-inno-store-chip
-        [name]="sizeItem.localizations[0]?.name"
-        (remove)="removeSize.emit($index)"
-      />
+  <div class="flex flex-col gap-3">
+    @for (sizeCtrl of sizesArray.controls; track sizeCtrl; let i = $index) {
+      <div class="flex items-center gap-4 group">
+        <div class="grow">
+          @let nameControl = getSizeNameControl(i);
+
+          <app-inno-store-input
+            [label]="'Размер (' + (activeLang() | uppercase) + ')'"
+            placeholder="Например: S, M, 42..."
+            [value]="nameControl?.value"
+            (valueChange)="nameControl?.setValue($event)"
+            [class]="
+              nameControl?.invalid && (nameControl?.dirty || nameControl?.touched)
+                ? 'border-red-500'
+                : ''
+            "
+          />
+
+          @if (nameControl?.invalid && (nameControl?.dirty || nameControl?.touched)) {
+            <span class="text-xs text-red-500 ml-1">Обязательно</span>
+          }
+        </div>
+
+        <button
+          type="button"
+          (click)="removeSize(i)"
+          class="mt-4 p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+          title="Удалить размер"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+            />
+          </svg>
+        </button>
+      </div>
     }
 
-    <button
-      (click)="addSize.emit()"
-      type="button"
-      class="w-10 h-10 flex items-center justify-center bg-gray-100 text-gray-600 rounded-full hover:bg-blue-600 hover:text-white transition-all"
-    >
-      <span class="text-xl">+</span>
-    </button>
+    @if (sizesArray.length === 0) {
+      <div
+        class="text-center py-8 border-2 border-dashed border-gray-200 rounded-xl text-gray-400 bg-gray-50/50"
+      >
+        Нет добавленных размеров
+      </div>
+    }
   </div>
 </section>

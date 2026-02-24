@@ -1,8 +1,10 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { ProductGroupService } from '../../core/generated/services'; // Check path
-import { toSignal } from '@angular/core/rxjs-interop';
+import { ProductCategoryService, ProductService } from '../../core/generated/services'; // Check path
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { ProductCategoryInformation, ProductDTO } from '../../core/generated';
+import { filter, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-products',
@@ -11,35 +13,58 @@ import { toSignal } from '@angular/core/rxjs-interop';
   styleUrl: './products.scss',
 })
 export class Products {
-  private productGroupService = inject(ProductGroupService);
+  private categoryService = inject(ProductCategoryService);
+  private productService = inject(ProductService);
 
-  private groups = toSignal(this.productGroupService.getAll('en'), {
-    initialValue: [],
+  activeLang = signal('ru');
+  selectedCategoryId = signal<string | null>(null);
+
+  private rawCategories = toSignal(this.categoryService.getAll(), {
+    initialValue: [] as ProductCategoryInformation[],
   });
 
-  protected categories = computed(() => {
-    const groupNames = this.groups()
-      .map((g) => g.name)
-      .filter((name): name is string => !!name);
-
-    return ['Все', ...groupNames];
+  private rawProducts = toSignal(this.productService.getProducts(), {
+    initialValue: [] as ProductDTO[],
   });
 
-  protected selectedCategory = signal<string>('Все');
+  uiCategories = computed(() => {
+    const list = this.rawCategories();
+    const lang = this.activeLang();
 
-  protected filteredProducts = computed(() => {
-    const currentCategory = this.selectedCategory();
-    const allGroups = this.groups();
+    const mapped = list.map((cat) => {
+      const loc =
+        cat.localizations?.find((l) => l.languageISOCode === lang) || cat.localizations?.[0];
+      return {
+        id: cat.id,
+        name: loc?.name || 'Unnamed',
+      };
+    });
 
-    if (currentCategory === 'Все') {
-      return allGroups.flatMap((group) => group.products || []);
+    // Add "All" option at the beginning
+    return [{ id: null, name: 'Все' }, ...mapped];
+  });
+
+  filteredProducts = computed(() => {
+    const allProducts = this.rawProducts();
+    const selectedId = this.selectedCategoryId();
+
+    // If no data yet
+    if (!allProducts) return [];
+
+    // If "All" is selected (id is null), return everything
+    if (!selectedId) {
+      return allProducts;
     }
 
-    const targetGroup = allGroups.find((g) => g.name === currentCategory);
-    return targetGroup?.products || [];
+    // Filter by Category ID
+    // Ensure your ProductDTO has 'productCategoryId'
+    return allProducts.filter((p) => p.productCategoryId === selectedId);
   });
 
-  protected selectCategory(category: string): void {
-    this.selectedCategory.set(category);
+  selectCategory(id: string | null | undefined): void {
+    console.log(id);
+    if (id != undefined) {
+      this.selectedCategoryId.set(id);
+    }
   }
 }

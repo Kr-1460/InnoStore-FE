@@ -8,8 +8,9 @@ import { Component, input, output } from '@angular/core';
 })
 export class InnoStoreSwitcher {
   options = input.required<string[]>();
-
   active = input.required<string>();
+
+  errorOptions = input<string[]>([]);
 
   select = output<string>();
 }

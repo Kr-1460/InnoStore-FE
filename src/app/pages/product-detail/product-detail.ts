@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CloseIcon } from '../../components/icons/close-icon/close-icon';
 import { ProductService } from '../../core/generated/services'; // Check your import path
-import { ProductDTO } from '../../core/generated/models'; // Check your import path
+import { ProductDTO, ProductImageDTO } from '../../core/generated/models'; // Check your import path
+import { getSystemColorById, SYSTEM_COLORS } from '../../core/constants/system-colors';
 
 @Component({
   selector: 'app-product-detail',
@@ -17,8 +18,48 @@ export class ProductDetail {
 
   // Signals
   protected readonly product = signal<ProductDTO | null>(null);
-  protected readonly selectedImageIndex = signal(0);
+
+  protected readonly selectedSystemColorId = signal<string | null>(null);
   protected readonly selectedSizeId = signal<string | null>(null);
+  protected readonly selectedImageIndex = signal(0);
+
+  protected selectedColor = computed(() => {
+    const currentId = this.selectedSystemColorId();
+    return this.availableColors().find((c) => c.color === currentId);
+  });
+
+  protected currentGallery = computed<ProductImageDTO[]>(() => {
+    const p = this.product();
+    const colorId = this.selectedSystemColorId();
+
+    if (!p || !p.colors) return [];
+
+    // Find the color entry in the product that matches the selected system ID
+    const activeColor = p.colors.find((c) => c.color === colorId);
+
+    // Sort by orderNumber if available, otherwise return as is
+    return activeColor?.images || [];
+  });
+
+  protected mainImageUrl = computed<string | null>(() => {
+    const images = this.currentGallery();
+    const index = this.selectedImageIndex();
+    return images[index]?.imageUrl || images[0]?.imageUrl || null;
+  });
+
+  protected availableColors = computed(() => {
+    const p = this.product();
+    if (!p || !p.colors) return [];
+
+    return p.colors.map((pc) => {
+      const systemColor = getSystemColorById(pc.color);
+      return {
+        ...pc, // Keep ProductColorDTO data (images, id, etc)
+        hex: systemColor?.hex || '#ccc', // Fallback hex
+        name: systemColor?.name || 'Unknown',
+      };
+    });
+  });
 
   ngOnInit() {
     const productId = this.route.snapshot.paramMap.get('id');
@@ -42,8 +83,13 @@ export class ProductDetail {
       this.selectedSizeId.set(product.sizes[0].id || null);
     }
 
+    if (product.colors && product.colors.length > 0) {
+      this.selectedSystemColorId.set(product.colors[0].color);
+    }
+
     this.selectedImageIndex.set(0);
   }
+
   protected selectImage(index: number): void {
     this.selectedImageIndex.set(index);
   }
@@ -52,25 +98,23 @@ export class ProductDetail {
     this.selectedSizeId.set(sizeId);
   }
 
-  // protected selectColor(colorId: string): void {
-  //   this.selectedColor.set(colorId);
-  // }
-
-  protected currentImageUrl = computed(() => {
-    const product = this.product();
-    const index = this.selectedImageIndex();
-
-    if (!product?.images || product.images.length === 0) return null;
-
-    // Handle bounds check safely
-    return product.images[index]?.imageUrl || product.images[0].imageUrl;
-  });
+  protected selectColor(systemColorId: string): void {
+    if (this.selectedSystemColorId() !== systemColorId) {
+      this.selectedSystemColorId.set(systemColorId);
+      this.selectedImageIndex.set(0); // Reset gallery to start
+    }
+  }
 
   protected placeOrder(): void {
+    const p = this.product();
+    if (!p) return;
+
+    const selectedColorObj = p.colors?.find((c) => c.color === this.selectedSystemColorId());
+
     console.log('Placing order:', {
-      productId: this.product()?.id,
+      productId: p.id,
       sizeId: this.selectedSizeId(),
-      // color: this.selectedColor() // Disabled until backend supports it
+      productColorId: selectedColorObj?.id,
     });
   }
 }

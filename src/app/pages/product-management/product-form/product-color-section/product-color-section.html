@@ -17,7 +17,7 @@
               labelKey="name"
               colorKey="hex"
               placeholder="Заменить на..."
-              (select)="onSelectReplacement($event)"
+              (itemSelected)="onSelectReplacement($event)"
               (close)="editingColorId.set(null)"
             />
           </div>
@@ -82,9 +82,10 @@
             labelKey="name"
             colorKey="hex"
             placeholder="Выберите новый цвет..."
-            (select)="onSelectNewColor($event)"
+            (itemSelected)="onSelectNewColor($event)"
             (close)="isSelecting.set(false)"
           />
+
           <button (click)="isSelecting.set(false)" class="text-gray-400 hover:text-red-500 p-1">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path d="M6 18L18 6M6 6l12 12" stroke-width="2" stroke-linecap="round" />

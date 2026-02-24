@@ -9,9 +9,9 @@
 
   <app-product-form
     class="w-full"
-    [initialData]="activeProductData()"
-    [addedColors]="addedColors()"
-    [selectedColorId]="selectedColorId()"
+    [initialData]="productData()"
+    [selectedColorId]="activeColorId() || ''"
+    [addedColors]="addedColorsUi()"
     (colorAdded)="onColorAdded($event)"
     (colorChanged)="onColorChanged($event)"
     (colorRemoved)="removeColor($event)"

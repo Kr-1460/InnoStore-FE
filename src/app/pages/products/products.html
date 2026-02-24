@@ -1,51 +1,117 @@
-<div class="title-section">
-  <h1 class="page-title">
-    Товары за баллы
-    <sup class="product-count">{{ filteredProducts().length }}</sup>
-  </h1>
-</div>
-
-<div class="mb-6">
-  <a
-    routerLink="/products/create"
-    class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-lg transition-colors inline-flex items-center gap-2"
-  >
-    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-    </svg>
-    Add Product
-  </a>
-</div>
-
-<div class="filters">
-  @for (category of categories(); track category) {
-    <button
-      class="filter-btn"
-      [class.active]="selectedCategory() === category"
-      (click)="selectCategory(category)"
-    >
-      {{ category }}
-    </button>
-  }
-</div>
-
-<div class="products-grid">
-  @for (product of filteredProducts(); track product.id) {
-    <a [routerLink]="['/product', product.id]" class="product-card">
-      <div class="product-image">
-        @if (product.imageUrl) {
-          <img [src]="product.imageUrl" [alt]="product.name" class="card-img" />
-        } @else {
-          <div class="image-placeholder default-placeholder"></div>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-8">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900 flex items-center gap-3">
+        Товары за баллы
+        @if (filteredProducts()) {
+          <span
+            class="inline-flex items-center justify-center px-3 py-1 text-lg font-bold text-blue-600 bg-blue-100 rounded-full"
+          >
+            {{ filteredProducts()?.length || 0 }}
+          </span>
         }
-      </div>
+      </h1>
+      <p class="mt-2 text-gray-500">Обменивайте заработанные баллы на реальные товары</p>
+    </div>
 
-      <div class="product-price">{{ product.price }} P</div>
-      <div class="product-name">{{ product.name }}</div>
+    <a
+      routerLink="/products/create"
+      class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-5 py-2.5 rounded-xl transition-all shadow-md shadow-blue-200 hover:shadow-lg active:scale-95 flex items-center gap-2"
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+      </svg>
+      Добавить товар
     </a>
-  }
+  </div>
 
-  @if (filteredProducts().length === 0) {
-    <div class="no-products">Нет товаров в этой категории</div>
+  <div class="flex gap-2 mb-8 overflow-x-auto pb-2 scrollbar-hide">
+    @for (cat of uiCategories(); track cat.id) {
+      <button
+        class="px-5 py-2.5 rounded-full font-medium text-sm transition-all whitespace-nowrap border"
+        [class.bg-gray-900]="selectedCategoryId() === cat.id"
+        [class.text-white]="selectedCategoryId() === cat.id"
+        [class.border-gray-900]="selectedCategoryId() === cat.id"
+        [class.bg-white]="selectedCategoryId() !== cat.id"
+        [class.text-gray-600]="selectedCategoryId() !== cat.id"
+        [class.border-gray-200]="selectedCategoryId() !== cat.id"
+        [class.hover:border-gray-400]="selectedCategoryId() !== cat.id"
+        (click)="selectCategory(cat.id)"
+      >
+        {{ cat.name }}
+      </button>
+    }
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    @for (product of filteredProducts(); track product.id) {
+      <a
+        [routerLink]="['/product', product.id]"
+        class="group bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1 block h-full flex flex-col"
+      >
+        <div class="aspect-[4/3] bg-gray-50 relative overflow-hidden">
+          @let firstImg = product.colors?.[0]?.images?.[0]?.imageUrl;
+
+          @if (firstImg) {
+            <img
+              [src]="firstImg"
+              [alt]="product.name"
+              class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+            />
+          } @else {
+            <div class="w-full h-full flex items-center justify-center text-gray-300 bg-gray-100">
+              <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
+              </svg>
+            </div>
+          }
+        </div>
+
+        <div class="p-5 flex flex-col flex-grow">
+          <div class="mb-2">
+            <h3
+              class="font-bold text-gray-900 line-clamp-1 group-hover:text-blue-600 transition-colors"
+              [title]="product.name"
+            >
+              {{ product.name }}
+            </h3>
+            <p class="text-sm text-gray-500 line-clamp-2 mt-1 h-10">{{ product.description }}</p>
+          </div>
+
+          <div class="flex items-center justify-between mt-auto pt-4 border-t border-gray-50">
+            <span class="text-xl font-bold text-gray-900">{{ product.price }} ₽</span>
+            <span
+              class="text-xs font-medium text-blue-600 bg-blue-50 px-2.5 py-1 rounded-lg group-hover:bg-blue-600 group-hover:text-white transition-colors"
+            >
+              Подробнее
+            </span>
+          </div>
+        </div>
+      </a>
+    }
+  </div>
+
+  @if (!filteredProducts() || filteredProducts()?.length === 0) {
+    <div class="flex flex-col items-center justify-center py-20 text-center">
+      <div
+        class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4 text-gray-400"
+      >
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
+          />
+        </svg>
+      </div>
+      <h3 class="text-lg font-medium text-gray-900">Товары не найдены</h3>
+      <p class="text-gray-500 mt-1">В этой категории пока нет товаров.</p>
+    </div>
   }
 </div>

@@ -41,6 +41,22 @@ export class ProductService {
         return this.httpClient.get(url, requestOptions);
     }
 
+    getProducts(observe?: 'body', options?: RequestOptions<'json'>): Observable<Array<ProductDTO>>;
+    getProducts(observe?: 'response', options?: RequestOptions<'json'>): Observable<HttpResponse<Array<ProductDTO>>>;
+    getProducts(observe?: 'events', options?: RequestOptions<'json'>): Observable<HttpEvent<Array<ProductDTO>>>;
+    getProducts(observe?: 'body' | 'events' | 'response', options?: RequestOptions<'arraybuffer' | 'blob' | 'json' | 'text'>): Observable<any> {
+        const url = `${this.basePath}/api/Product`;
+
+        const requestOptions: any = {
+            observe: observe as any,
+            reportProgress: options?.reportProgress,
+            withCredentials: options?.withCredentials,
+            context: this.createContextWithClientId(options?.context)
+        };
+
+        return this.httpClient.get(url, requestOptions);
+    }
+
     createProduct(createProductModel: CreateProductModel, observe?: 'body', options?: RequestOptions<'json'>): Observable<ProductDTO>;
     createProduct(createProductModel: CreateProductModel, observe?: 'response', options?: RequestOptions<'json'>): Observable<HttpResponse<ProductDTO>>;
     createProduct(createProductModel: CreateProductModel, observe?: 'events', options?: RequestOptions<'json'>): Observable<HttpEvent<ProductDTO>>;
@@ -87,21 +103,5 @@ export class ProductService {
         };
 
         return this.httpClient.delete(url, requestOptions);
-    }
-
-    getProductsByGroupId(groupId: string, languageCode: string, observe?: 'body', options?: RequestOptions<'json'>): Observable<Array<ProductDTO>>;
-    getProductsByGroupId(groupId: string, languageCode: string, observe?: 'response', options?: RequestOptions<'json'>): Observable<HttpResponse<Array<ProductDTO>>>;
-    getProductsByGroupId(groupId: string, languageCode: string, observe?: 'events', options?: RequestOptions<'json'>): Observable<HttpEvent<Array<ProductDTO>>>;
-    getProductsByGroupId(groupId: string, languageCode: string, observe?: 'body' | 'events' | 'response', options?: RequestOptions<'arraybuffer' | 'blob' | 'json' | 'text'>): Observable<any> {
-        const url = `${this.basePath}/api/Product/${languageCode}/group/${groupId}`;
-
-        const requestOptions: any = {
-            observe: observe as any,
-            reportProgress: options?.reportProgress,
-            withCredentials: options?.withCredentials,
-            context: this.createContextWithClientId(options?.context)
-        };
-
-        return this.httpClient.get(url, requestOptions);
     }
 }

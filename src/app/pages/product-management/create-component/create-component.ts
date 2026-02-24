@@ -1,8 +1,13 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { ImageGrid } from '../image-grid/image-grid';
 import { ProductForm } from '../product-form/product-form';
-import { CreateProductModel } from '../../../core/generated';
+import {
+  CreateProductColorModel,
+  CreateProductImageModel,
+  CreateProductModel,
+} from '../../../core/generated';
 import { SystemColor } from '../../../components/inno-store-color-selection/inno-store-color-selection';
+import { getSystemColorById } from '../../../core/constants/system-colors';
 
 @Component({
   selector: 'app-create-component',
@@ -11,135 +16,137 @@ import { SystemColor } from '../../../components/inno-store-color-selection/inno
   styleUrl: './create-component.scss',
 })
 export class CreateComponent {
-  commonProductData = signal<Omit<CreateProductModel, 'images'>>({
+  productData = signal<CreateProductModel>({
     price: 0,
-    productGroupId: '',
+    productCategoryId: '',
     localizations: [
       { name: '', description: '', languageISOCode: 'ru' },
       { name: '', description: '', languageISOCode: 'en' },
     ],
     sizes: [],
+    colors: [{ color: '0', images: [] }],
   });
 
   colorSpecificImages = signal<Record<string, { imageUrl: string }[]>>({
-    '0': [], // Начальный цвет
+    '0': [],
   });
 
-  addedColors = signal<SystemColor[]>([{ id: '0', name: 'Прозрачный', hex: '#00000000' }]);
-  selectedColorId = signal<string>('0');
-
-  activeProductData = computed((): CreateProductModel => {
-    const id = this.selectedColorId();
-    const images = this.colorSpecificImages()[id] || [];
-
-    return {
-      ...this.commonProductData(),
-      images: images,
-    };
+  activeColorId = signal<string | null>('0');
+  addedColorsUi = computed<SystemColor[]>(() => {
+    const modelColors = this.productData().colors;
+    return modelColors.map((c) => {
+      const found = getSystemColorById(c.color);
+      return found || { id: c.color, name: 'Unknown', hex: '#ccc' };
+    });
   });
 
-  currentImages = computed(() => this.activeProductData().images?.map((img) => img.imageUrl) || []);
+  currentImages = computed(() => {
+    const activeId = this.activeColorId();
+    if (!activeId) return [];
+
+    const colorEntry = this.productData().colors.find((c) => c.color === activeId);
+    return colorEntry?.images?.map((img) => img.imageUrl) || [];
+  });
 
   onColorAdded(color: SystemColor) {
-    this.addedColors.update((prev) => [...prev, color]);
+    this.productData.update((prev) => {
+      if (prev.colors.some((c) => c.color === color.id)) return prev;
 
-    // Создаем пустой массив картинок для нового цвета
-    this.colorSpecificImages.update((v) => ({
-      ...v,
-      [color.id]: [],
-    }));
+      const newColorEntry: CreateProductColorModel = {
+        color: color.id,
+        images: [],
+      };
 
-    this.selectedColorId.set(color.id);
+      return {
+        ...prev,
+        colors: [...prev.colors, newColorEntry],
+      };
+    });
+
+    this.activeColorId.set(color.id);
   }
 
   onColorChanged(colorId: string) {
-    this.selectedColorId.set(colorId);
+    this.activeColorId.set(colorId);
   }
 
   removeColor(color: SystemColor) {
-    this.addedColors.update((prev) => prev.filter((c) => c.id !== color.id));
+    this.productData.update((prev) => ({
+      ...prev,
+      colors: prev.colors.filter((c) => c.color !== color.id),
+    }));
 
-    this.colorSpecificImages.update((v) => {
-      const newVariants = { ...v };
-      delete newVariants[color.id];
-      return newVariants;
-    });
-
-    if (this.selectedColorId() === color.id) {
-      const nextColor = this.addedColors()[0];
-      this.selectedColorId.set(nextColor ? nextColor.id : '');
+    if (this.activeColorId() === color.id) {
+      const remaining = this.productData().colors;
+      this.activeColorId.set(remaining.length > 0 ? remaining[0].color : null);
     }
   }
 
   handleColorUpdate(event: { oldId: string; newColor: SystemColor }) {
-    const { oldId, newColor } = event;
+    this.productData.update((prev) => ({
+      ...prev,
+      colors: prev.colors.map((c) => {
+        if (c.color === event.oldId) {
+          return { ...c, color: event.newColor.id };
+        }
+        return c;
+      }),
+    }));
 
-    this.addedColors.update((prev) => prev.map((c) => (c.id === oldId ? newColor : c)));
-
-    this.colorSpecificImages.update((v) => {
-      const data = v[oldId];
-      const newVariants = { ...v };
-      newVariants[newColor.id] = { ...data };
-      delete newVariants[oldId];
-      return newVariants;
-    });
-
-    if (this.selectedColorId() === oldId) {
-      this.selectedColorId.set(newColor.id);
+    if (this.activeColorId() === event.oldId) {
+      this.activeColorId.set(event.newColor.id);
     }
   }
 
-  private getEmptyModel(): CreateProductModel {
-    return {
-      price: 0,
-      productGroupId: '',
-      localizations: [
-        { name: '', description: '', languageISOCode: 'ru' },
-        { name: '', description: '', languageISOCode: 'en' },
-      ],
-      sizes: [],
-      images: [],
-    };
-  }
-
-  updateImages(newUrls: string[]) {
-    const colorId = this.selectedColorId();
-    this.colorSpecificImages.update((prev) => ({
-      ...prev,
-      [colorId]: newUrls.map((url) => ({ imageUrl: url })),
-    }));
-  }
-
   removeImage(index: number) {
-    const current = this.currentImages().filter((_, i) => i !== index);
-    this.updateImages(current);
+    this.modifyImages((imgs) => imgs.filter((_, i) => i !== index));
   }
 
   addImage(url: string) {
-    const current = [...this.currentImages(), url];
-    this.updateImages(current);
+    this.modifyImages((imgs) => {
+      const newImg: CreateProductImageModel = {
+        imageUrl: url,
+        orderNumber: imgs.length,
+      };
+      return [...imgs, newImg];
+    });
   }
 
-  updateImageOrder(newOrder: string[]) {
-    this.updateImages(newOrder);
+  updateImageOrder(newUrls: string[]) {
+    this.modifyImages(() => {
+      return newUrls.map((url, index) => ({
+        imageUrl: url,
+        orderNumber: index,
+      }));
+    });
+  }
+
+  private modifyImages(
+    modifier: (current: CreateProductImageModel[]) => CreateProductImageModel[],
+  ) {
+    const activeId = this.activeColorId();
+    if (!activeId) return;
+
+    this.productData.update((prev) => ({
+      ...prev,
+      colors: prev.colors.map((c) => {
+        if (c.color === activeId) {
+          return { ...c, images: modifier(c.images || []) };
+        }
+        return c;
+      }),
+    }));
   }
 
   saveProduct() {
-    const finalVariants = this.addedColors().map((color) => ({
-      ...this.commonProductData(),
-      images: this.colorSpecificImages()[color.id] || [],
-      colorId: color.id,
-    }));
-
-    console.log('Final Data for API:', finalVariants);
+    console.log('Payload ready for API:', this.productData());
   }
 
-  handleFormUpdate(updated: CreateProductModel) {
-    this.commonProductData.set({
-      price: updated.price,
-      productGroupId: updated.productGroupId,
-      localizations: updated.localizations,
-      sizes: updated.sizes,
-    });
+  handleFormUpdate(updatedPartial: CreateProductModel) {
+    this.productData.update((prev) => ({
+      ...prev,
+      ...updatedPartial,
+      colors: prev.colors,
+    }));
   }
 }

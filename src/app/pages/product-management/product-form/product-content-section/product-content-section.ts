@@ -1,18 +1,73 @@
-import { Component, input, output } from '@angular/core';
+import { Component, computed, effect, input, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormGroup, FormArray } from '@angular/forms';
+import { ProductCategoryInformation } from '../../../../core/generated/models';
+
+// Import your custom UI components
 import { InnoStoreInput } from '../../../../components/inno-store-input/inno-store-input';
+import { InnoStoreCombobox } from '../../../../components/inno-store-combobox/inno-store-combobox';
 
 @Component({
   selector: 'app-product-content-section',
-  imports: [InnoStoreInput],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    InnoStoreInput, // Added
+    InnoStoreCombobox, // Added
+  ],
   templateUrl: './product-content-section.html',
-  styleUrl: './product-content-section.scss',
 })
 export class ProductContentSection {
-  name = input.required<string>();
-  price = input.required<number | string>();
-  description = input<string>('');
+  parentForm = input.required<FormGroup>();
+  categories = input<ProductCategoryInformation[]>([]);
+  activeLang = input.required<string>();
 
-  nameChange = output<string>();
-  priceChange = output<number | string>();
-  descriptionChange = output<string>();
+  // Prepare categories for the Combobox
+  uiCategories = computed(() => {
+    const lang = this.activeLang();
+    return (this.categories() || []).map((cat) => ({
+      id: cat.id || '',
+      name:
+        cat.localizations?.find((l) => l.languageISOCode === lang)?.name ||
+        cat.localizations?.[0]?.name ||
+        'Unnamed',
+    }));
+  });
+
+  // Helper to pass the currently selected category to the Combobox
+  // The Combobox expects an array (T[]), but we only select one.
+  selectedCategoryArray = computed(() => {
+    const selectedId = this.parentForm().get('productCategoryId')?.value;
+    if (!selectedId) return [];
+
+    const found = this.uiCategories().find((c) => c.id === selectedId);
+    return found ? [found] : [];
+  });
+
+  // Logic to find the current language FormGroup
+  currentLocalizationGroup = computed(() => {
+    const form = this.parentForm();
+    const locArray = form.get('localizations') as FormArray;
+    const controls = locArray.controls as FormGroup[];
+    return controls.find((c) => c.get('languageISOCode')?.value === this.activeLang());
+  });
+
+  // --- Handlers ---
+
+  onCategorySelect(id: string | number) {
+    this.parentForm().get('productCategoryId')?.setValue(id);
+  }
+
+  // --- Validation Helpers ---
+
+  isFieldInvalid(fieldName: string): boolean {
+    const control = this.parentForm().get(fieldName);
+    return !!(control && control.invalid && (control.dirty || control.touched));
+  }
+
+  isLocFieldInvalid(fieldName: string): boolean {
+    const group = this.currentLocalizationGroup();
+    const control = group?.get(fieldName);
+    return !!(control && control.invalid && (control.dirty || control.touched));
+  }
 }
