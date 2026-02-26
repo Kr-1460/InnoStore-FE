@@ -1,0 +1,35 @@
+<div class="filter-modal">
+    <div class="modal-header">
+      <h3>Фильтры</h3>
+      <button class="close-x" (click)="dialogRef.close()">&times;</button>
+    </div>
+
+    <div class="filter-body">
+      <div class="filter-group">
+        <label>Период</label>
+        <div class="date-range">
+          <input type="date" [(ngModel)]="filterData.startDate">
+          <input type="date" [(ngModel)]="filterData.endDate">
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <label>Тип операции</label>
+        <select [(ngModel)]="filterData.type">
+          <option value="all">Все</option>
+          <option value="replenishment">Пополнение</option>
+          <option value="writeOff">Списание</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Описание</label>
+        <input type="text" [(ngModel)]="filterData.description" placeholder="Description...">
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-primary" (click)="apply()">Применить</button>
+      <button type="button" class="btn-reset" (click)="reset()">Сбросить</button>
+    </div>
+  </div>

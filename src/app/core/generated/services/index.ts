@@ -9,5 +9,9 @@
 */
 export { FileService } from "./file.service";
 export { HealthService } from "./health.service";
+export { OrderAuditService } from "./orderAudit.service";
+export { PassedEventService } from "./passedEvent.service";
 export { ProductService } from "./product.service";
 export { ProductGroupService } from "./productGroup.service";
+export { TransactionService } from "./transaction.service";
+export { UserService } from "./user.service";

@@ -11,26 +11,7 @@
     </div>
     
     <div class="transactions-section">
-      <h2 class="transactions-title">Транзакции</h2>
-      <div class="transactions-list">
-        @for (transaction of transactions(); track transaction.id) {
-          <div class="transaction-item">
-            <div class="transaction-icon" [class.income]="transaction.type === 'income'" [class.expense]="transaction.type === 'expense'">
-              @if (transaction.type === 'income') {
-                <app-arrow-up-icon />
-              } @else {
-                <app-arrow-down-icon />
-              }
-            </div>
-            <div class="transaction-details">
-              <p class="transaction-description">{{ transaction.description }}</p>
-            </div>
-            <div class="transaction-amount" [class.income]="transaction.type === 'income'" [class.expense]="transaction.type === 'expense'">
-              {{ transaction.type === 'income' ? '+' : '-' }}{{ transaction.amount }} P
-            </div>
-          </div>
-        }
-      </div>
+      <app-transactions-list></app-transactions-list>
     </div>
 
     <div class="logout-divider"></div>

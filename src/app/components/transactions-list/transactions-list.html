@@ -1,0 +1,39 @@
+<div class="header-container">
+  <span class="list-name">Транзакции</span>
+  <button class="filter-button" (click)="openFilters()">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+    </svg>
+  </button>
+</div>
+
+<div class="transactions-container">
+    @for (t of currentTransactions(); track $index) {
+      <div class="transaction-item">
+        
+        <div class="icon-wrapper">
+          @if (t.amount > 0) {
+            <img [src]="replenishmentIcon" alt="Transaction icon" />
+          }
+
+          @if (t.amount < 0) {
+            <img [src]="writeOffIcon" alt="Transaction icon" />
+          }
+          
+        </div>
+    
+        <div class="info-wrapper">
+          <span class="type-label bold-text">
+            {{ t.amount > 0 ? 'Пополнение' : 'Списание' }}
+          </span>
+          <span class="description">{{ t.description }}</span>
+          <span class="date">{{ t.date | date:'dd.MM.yyyy, HH:mm' }}</span>
+        </div>
+    
+        <div class="amount-wrapper" [class.positive]="t.amount > 0" [class.negative]="t.amount < 0">
+          {{ t.amount > 0 ? '+' : '' }}{{ t.amount | number:'1.2-2' }}
+        </div>
+    
+      </div>
+    }
+  </div>

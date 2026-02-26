@@ -5,6 +5,7 @@ import { AuthService, User } from '@auth0/auth0-angular';
 import { ChevronRightIcon } from '../icons/chevron-right-icon/chevron-right-icon';
 import { ArrowUpIcon } from '../icons/arrow-up-icon/arrow-up-icon';
 import { ArrowDownIcon } from '../icons/arrow-down-icon/arrow-down-icon';
+import { TransactionsList } from "../transactions-list/transactions-list";
 
 interface Transaction {
   id: number;
@@ -17,7 +18,7 @@ interface Transaction {
 @Component({
   selector: 'app-transactions-modal',
   standalone: true,
-  imports: [CommonModule, RouterLink, ChevronRightIcon, ArrowUpIcon, ArrowDownIcon],
+  imports: [CommonModule, RouterLink, ChevronRightIcon, ArrowUpIcon, ArrowDownIcon, TransactionsList],
   templateUrl: './transactions-modal.html',
   styleUrl: './transactions-modal.scss',
 })

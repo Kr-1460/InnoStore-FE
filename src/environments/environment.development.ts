@@ -1,5 +1,5 @@
 export const environment = {
-  baseApiPath: 'https://localhost:7069/api',
+  baseApiPath: 'https://localhost:7069/',
 
   auth: {
     clientId: 'MpkBlYkrIbSbNlZaQneqWMPE5b0lGW6i',

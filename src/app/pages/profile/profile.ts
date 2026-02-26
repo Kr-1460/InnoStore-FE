@@ -1,5 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TransactionsList } from '../../components/transactions-list/transactions-list';
 
 interface Transaction {
   id: number;
@@ -11,7 +12,7 @@ interface Transaction {
 
 @Component({
   selector: 'app-profile',
-  imports: [CommonModule],
+  imports: [CommonModule, TransactionsList],
   templateUrl: './profile.html',
   styleUrl: './profile.scss',
 })

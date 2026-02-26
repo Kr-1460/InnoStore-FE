@@ -34,6 +34,47 @@ export interface ErrorDetails {
 }
 
 export type IFormFile = Blob;
+export type OrderActionType = number;
+
+export interface OrderAuditDto {
+    id: string;
+    correlationId: string;
+    orderId: string;
+    changedByUserId: string;
+    actionType: OrderActionType;
+    data: string;
+}
+
+export interface OrderDto {
+    id: string;
+    userId: string;
+    status: OrderStatus;
+}
+
+export type OrderStatus = number;
+
+export interface PassedEventDTO {
+    eventContent: PassedEventDTOEventContent;
+}
+
+export interface PassedEventDTOEventContent {
+    id: string;
+    title: string;
+    startDate: Date;
+    type: PassedEventDTOEventContentEventType;
+    speakers: Array<PassedEventDTOEventContentSpeaker>;
+    assistents: Array<PassedEventDTOEventContentAssistent>;
+}
+
+export interface PassedEventDTOEventContentAssistent {
+    hrmId?: number | string;
+}
+
+export type PassedEventDTOEventContentEventType = number;
+
+export interface PassedEventDTOEventContentSpeaker {
+    hrmId: number | string;
+}
 
 export interface ProductDTO {
     id?: string;
@@ -92,6 +133,15 @@ export interface ProductSizeLocalizationModel {
     name: string;
     languageISOCode: string;
 }
+
+export interface TransactionDTO {
+    id: string;
+    createdAt: Date;
+    amount: number | string;
+    transactionType: TransactionDTOType;
+}
+
+export type TransactionDTOType = number;
 
 export interface UpdateProductGroupModel {
     localizations?: Array<ProductGroupLocalizationModel>;
