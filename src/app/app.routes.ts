@@ -21,13 +21,13 @@ export const routes: Routes = [
           {
             path: 'product/:id',
             component: ProductDetail
+          },
+          {
+            path: 'profile',
+            component: Profile
           }
         ]
       },
-      {
-        path: 'profile',
-        component: Profile
-      }
     ]
   }
 ];

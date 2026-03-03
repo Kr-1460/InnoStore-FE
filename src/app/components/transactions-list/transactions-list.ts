@@ -2,6 +2,7 @@ import { Component, effect, inject, input, signal, computed } from '@angular/cor
 import { CommonModule } from '@angular/common';
 import { Dialog, DialogModule } from '@angular/cdk/dialog';
 import { TransactionFilters, DEFAULT_FILTERS, TransactionsFilterComponent } from '../transactions-filter/transactions-filter';
+import { AuthService } from '@auth0/auth0-angular';
 
 interface Transaction {
   amount: number;
@@ -20,6 +21,10 @@ export class TransactionsList {
   private dialog = inject(Dialog);
 
   private filters = signal<TransactionFilters>({ ...DEFAULT_FILTERS });
+
+  private authService = inject(AuthService);
+    
+  protected user$ = this.authService.user$;
 
   currentTransactions = computed(() =>
     this.allTransactions().filter(x =>

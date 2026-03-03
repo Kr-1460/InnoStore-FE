@@ -1,39 +1,54 @@
-<div class="header-container">
-  <span class="list-name">Транзакции</span>
-  <button class="filter-button" (click)="openFilters()">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
-    </svg>
-  </button>
-</div>
+<div class="page-wrapper">
+  <div class="content-group">
 
-<div class="transactions-container">
-    @for (t of currentTransactions(); track $index) {
-      <div class="transaction-item">
-        
-        <div class="icon-wrapper">
-          @if (t.amount > 0) {
-            <img [src]="replenishmentIcon" alt="Transaction icon" />
-          }
-
-          @if (t.amount < 0) {
-            <img [src]="writeOffIcon" alt="Transaction icon" />
-          }
-          
-        </div>
-    
-        <div class="info-wrapper">
-          <span class="type-label bold-text">
-            {{ t.amount > 0 ? 'Пополнение' : 'Списание' }}
-          </span>
-          <span class="description">{{ t.description }}</span>
-          <span class="date">{{ t.date | date:'dd.MM.yyyy, HH:mm' }}</span>
-        </div>
-    
-        <div class="amount-wrapper" [class.positive]="t.amount > 0" [class.negative]="t.amount < 0">
-          {{ t.amount > 0 ? '+' : '' }}{{ t.amount | number:'1.2-2' }}
-        </div>
-    
+    <div class="user-profile" *ngIf="user$ | async as user">
+      <div class="avatar-wrapper">
+        <img [src]="user.picture" alt="User avatar" class="avatar-img" />
       </div>
-    }
+      <div class="user-info">
+        <span class="user-name">{{ user.name }}</span>
+        <span class="user-email">{{ user.email }}</span>
+      </div>
+    </div>
+
+    <div class="transactions-container">
+      <div class="header-inside">
+        <span class="list-name">Транзакции</span>
+        <button class="filter-button" (click)="openFilters()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+          </svg>
+        </button>
+      </div>
+
+        @for (t of currentTransactions(); track $index) {
+          <div class="transaction-item">
+            
+            <div class="icon-wrapper">
+              @if (t.amount > 0) {
+                <img [src]="replenishmentIcon" alt="Transaction icon" />
+              }
+
+              @if (t.amount < 0) {
+                <img [src]="writeOffIcon" alt="Transaction icon" />
+              }
+              
+            </div>
+        
+            <div class="info-wrapper">
+              <span class="type-label bold-text">
+                {{ t.amount > 0 ? 'Пополнение' : 'Списание' }}
+              </span>
+              <span class="description">{{ t.description }}</span>
+              <span class="date">{{ t.date | date:'dd.MM.yyyy, HH:mm' }}</span>
+            </div>
+        
+            <div class="amount-wrapper" [class.positive]="t.amount > 0" [class.negative]="t.amount < 0">
+              {{ t.amount > 0 ? '+' : '' }}{{ t.amount | number:'1.2-2' }}
+            </div>
+        
+          </div>
+        }
+      </div>
   </div>
+</div>
