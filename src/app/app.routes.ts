@@ -2,8 +2,8 @@ import { Routes } from '@angular/router';
 import { MainLayout } from './layouts/main-layout/main-layout';
 import { Products } from './pages/products/products';
 import { ProductDetail } from './pages/product-detail/product-detail';
-import { Profile } from './pages/profile/profile';
 import { AuthGuard } from '@auth0/auth0-angular';
+import { Transactions } from './pages/transactions/transactions';
 
 export const routes: Routes = [
   {
@@ -23,8 +23,8 @@ export const routes: Routes = [
             component: ProductDetail
           },
           {
-            path: 'profile',
-            component: Profile
+            path: 'transactions',
+            component: Transactions
           }
         ]
       },

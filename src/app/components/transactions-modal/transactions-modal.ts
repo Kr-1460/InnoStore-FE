@@ -7,14 +7,6 @@ import { ArrowUpIcon } from '../icons/arrow-up-icon/arrow-up-icon';
 import { ArrowDownIcon } from '../icons/arrow-down-icon/arrow-down-icon';
 import { TransactionsList } from "../transactions-list/transactions-list";
 
-interface Transaction {
-  id: number;
-  description: string;
-  amount: number;
-  type: 'income' | 'expense';
-  date: string;
-}
-
 @Component({
   selector: 'app-transactions-modal',
   standalone: true,
@@ -32,65 +24,6 @@ export class TransactionsModal {
 
   protected readonly userName = computed(() => this.userDetails()?.name || 'Пользователь');
   protected readonly userTitle = computed(() => this.userDetails()?.email || '');
-
-  protected readonly transactions = signal<Transaction[]>([
-    {
-      id: 1,
-      description: 'Покупка эко-бутылки',
-      amount: 40,
-      type: 'expense',
-      date: '2024-01-15'
-    },
-    {
-        id: 2,
-        description: 'Прохождение профессионального курса',
-        amount: 50,
-        type: 'income',
-        date: '2024-01-10'
-    },
-    {
-        id: 3,
-        description: 'Организация мероприятия',
-        amount: 40,
-        type: 'income',
-        date: '2024-01-05'
-    },
-        {
-        id: 3,
-        description: 'Организация мероприятия',
-        amount: 40,
-        type: 'income',
-        date: '2024-01-05'
-    },
-        {
-        id: 3,
-        description: 'Организация мероприятия',
-        amount: 40,
-        type: 'income',
-        date: '2024-01-05'
-    },
-        {
-        id: 3,
-        description: 'Организация мероприятия',
-        amount: 40,
-        type: 'income',
-        date: '2024-01-05'
-    },
-        {
-        id: 3,
-        description: 'Организация мероприятия',
-        amount: 40,
-        type: 'income',
-        date: '2024-01-05'
-    },
-        {
-        id: 3,
-        description: 'Организация мероприятия',
-        amount: 40,
-        type: 'income',
-        date: '2024-01-05'
-    },
-  ]);
 
   protected onCloseClick(): void {
     this.closeModal.emit();

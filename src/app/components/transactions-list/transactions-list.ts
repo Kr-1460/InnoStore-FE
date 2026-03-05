@@ -1,8 +1,8 @@
-import { Component, effect, inject, input, signal, computed } from '@angular/core';
+import { Component, inject, input, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Dialog, DialogModule } from '@angular/cdk/dialog';
 import { TransactionFilters, DEFAULT_FILTERS, TransactionsFilterComponent } from '../transactions-filter/transactions-filter';
-import { AuthService } from '@auth0/auth0-angular';
+import { TransactionsListItem } from '../transactions-list-item/transactions-list-item';
 
 interface Transaction {
   amount: number;
@@ -12,7 +12,11 @@ interface Transaction {
 
 @Component({
   selector: 'app-transactions-list',
-  imports: [CommonModule, DialogModule],
+  imports: [
+    CommonModule,
+    DialogModule,
+    TransactionsListItem
+  ],
   templateUrl: './transactions-list.html',
   styleUrl: './transactions-list.scss',
 })
@@ -22,14 +26,12 @@ export class TransactionsList {
 
   private filters = signal<TransactionFilters>({ ...DEFAULT_FILTERS });
 
-  private authService = inject(AuthService);
-    
-  protected user$ = this.authService.user$;
-
   currentTransactions = computed(() =>
     this.allTransactions().filter(x =>
       this.filterTransaction(x, this.filters())
   ));
+
+  showFilterButton = input<boolean>(true);
 
   allTransactions = input<Transaction[]>([
     {
@@ -92,10 +94,6 @@ export class TransactionsList {
       date: new Date(2042, 2, 15),
     },
   ]);
-
-  public replenishmentIcon = 'assets/images/replenishment.png';
-
-  public writeOffIcon = 'assets/images/write-off.png';
 
   openFilters() {
     const dialogRef = this.dialog.open<TransactionFilters>(

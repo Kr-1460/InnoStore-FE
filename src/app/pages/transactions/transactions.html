@@ -1,0 +1,20 @@
+<div class="page-wrapper">
+  <div class="content-group">
+
+    <div class="user-profile" *ngIf="user$ | async as user">
+
+      <div class="avatar-wrapper">
+        <img [src]="user.picture" alt="User avatar" class="avatar-img" />
+      </div>
+
+      <div class="user-info">
+        <span class="user-name">{{ user.name }}</span>
+        <span class="user-email">{{ user.email }}</span>
+      </div>
+
+    </div>
+
+    <app-transactions-list />
+
+  </div>
+</div>
