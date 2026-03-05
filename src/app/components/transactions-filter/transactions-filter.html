@@ -8,8 +8,8 @@
       <div class="filter-group">
         <label>Период</label>
         <div class="date-range">
-          <input type="date" [(ngModel)]="filterData.startDate">
-          <input type="date" [(ngModel)]="filterData.endDate">
+          <p-date-picker class="date-picker" [(ngModel)]="filterData.startDate" />
+          <p-date-picker [(ngModel)]="filterData.endDate" />
         </div>
       </div>
 

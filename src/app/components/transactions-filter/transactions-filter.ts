@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { DatePickerModule } from 'primeng/datepicker';
 
 export interface TransactionFilters {
   startDate: Date | null;
@@ -19,7 +20,7 @@ export const DEFAULT_FILTERS: TransactionFilters = {
 
 @Component({
   selector: 'app-transactions-filter',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, DatePickerModule],
   templateUrl: './transactions-filter.html',
   styleUrl: './transactions-filter.scss',
 })

@@ -64,11 +64,11 @@
   letter-spacing: 0.5px;
 }
 
-/* Стили полей ввода */
-.date-range {
-  display: flex;
-  gap: 12px;
-}
+// /* Стили полей ввода */
+// .date-range {
+//   display: flex;
+//   gap: 12px;
+// }
 
 input[type="date"],
 input[type="text"],
@@ -160,4 +160,8 @@ input:focus, select:focus {
   
   .btn-primary:active, .btn-reset:active {
     transform: scale(0.98);
+  }
+
+  .date-picker {
+    margin: 4px;;
   }

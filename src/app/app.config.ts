@@ -18,6 +18,9 @@ import { environment } from '../environments/environment.development';
 import { provideAuth0, authHttpInterceptorFn } from '@auth0/auth0-angular';
 import { UnauthorizedInterceptor } from '../app/interceptors/unathorized.interceptor';
 
+import { providePrimeNG } from 'primeng/config';
+import Aura from '@primeuix/themes/aura';
+
 const getRedirectUri = () => {
   return typeof window !== 'undefined' ? window.location.origin : '';
 };
@@ -62,5 +65,15 @@ export const appConfig: ApplicationConfig = {
     },
 
     provideClientHydration(withEventReplay()),
+
+    providePrimeNG({
+      theme: {
+        preset: Aura,
+        options: {
+          prefix: 'p',
+          darkModeSelector: '.innostore-prime-theme'
+        }
+      }
+    })
   ],
 };
