@@ -45,7 +45,7 @@ export class HttpParamsBuilder {
         if (!key) {
             throw new Error("key may not be null if value is Date");
         }
-        return httpParams.append(key, date.toISOString().substring(0, 10));
+        return httpParams.append(key, date.toISOString());
     }
 
     private static handleObject(httpParams: HttpParams, obj: Record<string, any>, key?: string): HttpParams {

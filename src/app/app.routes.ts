@@ -3,7 +3,7 @@ import { MainLayout } from './layouts/main-layout/main-layout';
 import { Products } from './pages/products/products';
 import { ProductDetail } from './pages/product-detail/product-detail';
 import { AuthGuard } from '@auth0/auth0-angular';
-import { Transactions } from './pages/transactions/transactions';
+import { TransactionsPage } from './pages/transactions/transactions';
 
 export const routes: Routes = [
   {
@@ -24,7 +24,7 @@ export const routes: Routes = [
           },
           {
             path: 'transactions',
-            component: Transactions
+            component: TransactionsPage
           }
         ]
       },

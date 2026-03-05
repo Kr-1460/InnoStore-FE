@@ -12,7 +12,7 @@ import { AuthService } from '@auth0/auth0-angular';
   templateUrl: './transactions.html',
   styleUrl: './transactions.scss',
 })
-export class Transactions {
+export class TransactionsPage {
   private authService = inject(AuthService);
     
   protected user$ = this.authService.user$;

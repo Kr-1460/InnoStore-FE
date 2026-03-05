@@ -42,8 +42,16 @@ export class TransactionService {
             params = HttpParamsBuilder.addToHttpParams(params, pageNumber, 'PageNumber');
         }
 
+        let headers: HttpHeaders;
+        if (options?.headers instanceof HttpHeaders) {
+            headers = options.headers;
+        } else {
+            headers = new HttpHeaders(options?.headers);
+        }
+
         const requestOptions: any = {
             observe: observe as any,
+            headers,
             params,
             reportProgress: options?.reportProgress,
             withCredentials: options?.withCredentials,
