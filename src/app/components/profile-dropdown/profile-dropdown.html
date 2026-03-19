@@ -1,0 +1,28 @@
+<div class="dropdown-content" *ngIf="isOpen()">
+
+  <button class="dropdown-item" (click)="goToProfile()">
+    <app-profile-icon></app-profile-icon>
+    Личный кабинет
+  </button>
+
+  <button class="dropdown-item" (click)="goToCart()">
+    <app-cart-icon></app-cart-icon>
+    Корзина
+  </button>
+
+  <button class="dropdown-item" (click)="goToAbout()">
+    <app-about-icon></app-about-icon>
+    О платформе
+  </button>
+
+  <button class="dropdown-item" (click)="goToAdminPanel()">
+    <app-admin-icon></app-admin-icon>
+    Панель администратора
+  </button>
+
+  <button class="dropdown-item logout" (click)="logout()">
+    <app-logout-icon></app-logout-icon>
+    Выйти
+  </button>
+
+</div>

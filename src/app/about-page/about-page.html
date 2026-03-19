@@ -1,0 +1,81 @@
+<div class="about-page">
+  
+  <section class="hero-section">
+    <h1>О платформе innostore</h1>
+    <p class="subtitle">innostore — это корпоративная экосистема Innowise, объединяющая ценности, культуру и стиль.</p>
+  </section>
+
+  <div class="top-grid">
+    <div class="feature-card">
+      <img src="handshake.png" alt="handshake">
+      <h3>Участвуй</h3>
+      <p>Проявляй инициативу, участвуй в ивентах и достигай KPI.</p>
+    </div>
+    <div class="feature-card">
+      <img src="coins.png" alt="coins">
+      <h3>Зарабатывай</h3>
+      <p>Получай внутренние баллы (P) за свои достижения.</p>
+    </div>
+    <div class="feature-card">
+      <img src="cart.png" alt="cart">
+      <h3>Выбирай</h3>
+      <p>Трать баллы в магазине на эксклюзивные коллекции мерча.</p>
+    </div>
+
+     <div class="hero-illustration">
+      <div class="img-wrapper">
+        <img src="hoodie.png" alt="hoodie">
+        <div class="glow-effect"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="bottom-grid">
+    <div class="quality-banner">
+      <h2>Качество и Дизайн 2026</h2>
+      <p>Мы не делаем "промо-футболки". Вещи из серии 2026 года разработаны с вниманием к деталям, премиальным материалам и современному крою.</p>
+      <span class="badge">Эксклюзивное производство</span>
+      <div class="innowise-logo-bg">innowise</div>
+    </div>
+
+  <div class="team-card">
+    <h3>Команда разработки</h3>
+    <p>Создано с &lt;3 для Innowise</p>
+    <div class="team-avatars">
+      
+    @for (item of teamPlaceholders; track $index) {
+      <div class="avatar"></div>
+    }
+  </div>
+</div>
+
+    <div class="info-stack">
+      <div class="info-item">
+        <img src="hoodie-icon.png" alt="hoodie-icon">
+        <div>
+          <div class="title">Новое худи '26</div>
+          <span class="status-tag">Скоро в продаже</span>
+        </div>
+      </div>
+      <div class="info-item">
+        <img src="bulb.png" alt="bulb">
+        <div class="title">Предлагай идеи</div>
+      </div>
+      <div class="info-item">
+        <img src="newspaper.png" alt="newspaper">
+        <div>
+          <div class="title">Новости платформы</div>
+          <p>Регулярные обновления и фичи.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn-catalog" (click)="goToCatalog()">
+      Перейти в каталог
+    </button>
+  </div>
+
+</div>

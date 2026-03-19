@@ -1,19 +1,43 @@
-<div class="user-info" *ngIf="user$ | async as user">
+<div class="user-info" *ngIf="user$ | async as user" style="position: relative;">
+
   <div class="points-badge">
     <span class="points">{{ userPoints() }} P</span>
   </div>
-  
-  <button class="profile-link" (click)="openModal($event)" type="button" aria-label="Open profile">
-    @if (user.picture) {
+
+  <button 
+    class="profile-link" 
+    type="button" 
+    aria-label="Open profile"
+    (click)="toggleMenus($event)">
+    
+    <ng-container *ngIf="user.picture; else placeholder">
       <img [src]="user.picture" class="profile-avatar" alt="Avatar">
-    } @else {
+    </ng-container>
+
+    <ng-template #placeholder>
       <div class="profile-avatar placeholder"></div>
-    }
+    </ng-template>
+  </button>
+
+  <button 
+    class="transactions-button" 
+    type="button" 
+    (click)="openModal()" 
+    style="display:none;">
+    Транзакции
   </button>
 
   <app-transactions-modal 
     [isOpen]="isModalOpen()" 
     [userDetails]="user"
     (closeModal)="closeModal()" 
+  />
+
+  <app-profile-dropdown 
+    *ngIf="isProfileDropdownOpen()" 
+    [userDetails]="user"
+    [userPoints]="userPoints()"
+    (close)="closeProfileDropdown()"
+    style="position: absolute; top: 100%; right: 0; z-index: 1000;"
   />
 </div>

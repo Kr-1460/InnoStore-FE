@@ -1,0 +1,15 @@
+:host {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    svg {
+        display: block;
+        width: var(--icon-size, 24px);
+        height: var(--icon-size, 24px);
+
+        path {
+            stroke: var(--icon-color, currentColor);
+        }
+    }
+}
