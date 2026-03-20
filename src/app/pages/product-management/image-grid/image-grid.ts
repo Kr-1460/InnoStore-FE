@@ -13,7 +13,7 @@ export class ImageGrid {
   images = input.required<string[]>();
 
   onRemove = output<number>();
-  onAdd = output<string>();
+  onAdd = output<{file: File, previewUrl: string}>();
   onOrderChange = output<string[]>();
 
   removeImage(index: number) {
@@ -33,8 +33,8 @@ export class ImageGrid {
 
       const reader = new FileReader();
       reader.onload = (e) => {
-        const url = e.target?.result as string;
-        this.onAdd.emit(url);
+        const previewUrl = e.target?.result as string;
+        this.onAdd.emit({file, previewUrl});
         input.value = '';
       };
       reader.readAsDataURL(file);

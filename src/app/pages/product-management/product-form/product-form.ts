@@ -9,7 +9,7 @@ import {
   AbstractControl,
   ValidationErrors,
 } from '@angular/forms';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 
 import {
   CreateProductModel,
@@ -21,6 +21,7 @@ import { ProductColorSection } from './product-color-section/product-color-secti
 import { ProductSizeSection } from './product-size-section/product-size-section';
 import { InnoStoreSwitcher } from '../../../components/inno-store-switcher/inno-store-switcher';
 import { SystemColor } from '../../../components/inno-store-color-selection/inno-store-color-selection';
+import { debounceTime, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-product-form',
@@ -36,34 +37,6 @@ import { SystemColor } from '../../../components/inno-store-color-selection/inno
   styleUrl: './product-form.scss',
 })
 export class ProductForm {
-  private fb = inject(FormBuilder);
-  private categoryService = inject(ProductCategoryService);
-
-  // --- Data ---
-  categories = toSignal(this.categoryService.getAll(), {
-    initialValue: [] as ProductCategoryInformation[],
-  });
-
-  // --- Inputs / Outputs ---
-  initialData = input.required<CreateProductModel>();
-  selectedColorId = input.required<string>();
-  addedColors = input<SystemColor[]>([]);
-
-  colorAdded = output<SystemColor>();
-  colorChanged = output<string>();
-  colorRemoved = output<SystemColor>();
-  colorUpdated = output<{ oldId: string; newColor: SystemColor }>();
-
-  onSave = output<CreateProductModel>();
-  onSubmitForm = output();
-
-  // --- State ---
-  activeLang = signal<string>('ru');
-  languageOptions = signal<string[]>(['ru', 'en']);
-  isSubmitted = signal(false);
-
-  // --- Reactive Form ---
-  productForm: FormGroup;
 
   constructor() {
     this.productForm = this.initForm();
@@ -74,7 +47,7 @@ export class ProductForm {
 
       // Stop if no data is provided
       if (!data) return;
-
+      if(this.productForm.dirty) return;
       // Check if data is actually different to avoid unnecessary UI repaints (Optional but good)
       // if (JSON.stringify(data) === JSON.stringify(this.mapFormToModel())) return;
 
@@ -93,19 +66,52 @@ export class ProductForm {
       this.productForm.patchValue(
         {
           price: data.price,
-          productCategoryId: data.productCategoryId,
+          productGroupId: data.productGroupId,
         },
         { emitEvent: false },
       );
     });
 
     // 2. SUBSCRIPTION: Form -> Parent
-    this.productForm.valueChanges.subscribe(() => {
+    this.productForm.valueChanges.pipe(debounceTime(500)).subscribe(() => {
       if (this.productForm.valid) {
         this.onSave.emit(this.mapFormToModel());
       }
     });
   }
+
+  private fb = inject(FormBuilder);
+  private categoryService = inject(ProductCategoryService);
+
+    activeLang = signal<string>('ru');
+  languageOptions = signal<string[]>(['ru', 'en']);
+  isSubmitted = signal(false);
+  // --- Data ---
+  categories = toSignal(toObservable(this.activeLang).pipe(
+    switchMap((lang) => this.categoryService.getAll(lang))
+  ), {
+    initialValue: [] as ProductCategoryInformation[],
+  });
+
+  // --- Inputs / Outputs ---
+  initialData = input.required<CreateProductModel>();
+  selectedColorId = input.required<string>();
+  addedColors = input<SystemColor[]>([]);
+
+  colorAdded = output<SystemColor>();
+  colorChanged = output<string>();
+  colorRemoved = output<SystemColor>();
+  colorUpdated = output<{ oldId: string; newColor: SystemColor }>();
+
+  onSave = output<CreateProductModel>();
+  onSubmitForm = output();
+
+  // --- State ---
+
+
+  // --- Reactive Form ---
+  productForm: FormGroup;
+
 
   private rebuildLocalizations(locs: any[] | undefined): FormArray<FormGroup> {
     // FIX: Explicitly type the array to hold FormGroups
@@ -159,7 +165,7 @@ export class ProductForm {
 
   private initForm(): FormGroup {
     return this.fb.group({
-      productCategoryId: ['', Validators.required],
+      productGroupId: ['', Validators.required],
       price: [0, [Validators.required, Validators.min(1)]],
       localizations: this.fb.array<FormGroup>([]),
       sizes: this.fb.array<FormGroup>([], [this.minArrayLength(1)]),
@@ -214,7 +220,7 @@ export class ProductForm {
     console.log('Form Status:', form.status);
 
     // 1. Check Root Fields
-    ['price', 'productCategoryId'].forEach((key) => {
+    ['price', 'productGroupId'].forEach((key) => {
       if (form.get(key)?.invalid)
         console.error(`Root Field '${key}' is invalid`, form.get(key)?.errors);
     });
@@ -260,6 +266,7 @@ export class ProductForm {
 
   private mapFormToModel(): CreateProductModel {
     const rawValue = this.productForm.getRawValue();
+
     return {
       ...rawValue,
       colors: this.addedColors().map((c) => ({ color: c.id, images: [] })),
@@ -277,5 +284,12 @@ export class ProductForm {
   }
   onColorUpdated(ev: any) {
     this.colorUpdated.emit(ev);
+  }
+
+  resetForm() {
+    setTimeout(() => {
+      this.productForm = this.initForm();
+      this.isSubmitted.set(false);
+    },0)
   }
 }

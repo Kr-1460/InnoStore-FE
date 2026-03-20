@@ -31,6 +31,11 @@ export class FileService {
     uploadFile(File?: IFormFile, observe?: 'body' | 'events' | 'response', options?: RequestOptions<'arraybuffer' | 'blob' | 'json' | 'text'>): Observable<any> {
         const url = `${this.basePath}/api/File/upload`;
 
+        const formData = new FormData();
+        if (File !== undefined && File !== null) {
+            formData.append('File', File);
+        }
+
         let headers: HttpHeaders;
         if (options?.headers instanceof HttpHeaders) {
             headers = options.headers;
@@ -38,23 +43,18 @@ export class FileService {
             headers = new HttpHeaders(options?.headers);
         }
         // Set Content-Type for URL-encoded form data
-        if (!headers.has('Content-Type')) {
+        /*if (!headers.has('Content-Type')) {
             headers = headers.set('Content-Type', 'application/x-www-form-urlencoded');
-        }
-
-        const formBody = new URLSearchParams();
-        if (File !== undefined && File !== null) {
-            formBody.append('File', String(File));
-        }
+        }*/
 
         const requestOptions: any = {
             observe: observe as any,
             headers,
             reportProgress: options?.reportProgress,
             withCredentials: options?.withCredentials,
-            context: this.createContextWithClientId(options?.context)
+            //context: this.createContextWithClientId(options?.context)
         };
 
-        return this.httpClient.post(url, formBody.toString(), requestOptions);
+        return this.httpClient.post(url, formData, requestOptions);
     }
 }

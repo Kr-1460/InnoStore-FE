@@ -3,7 +3,7 @@
     class="w-full"
     [images]="currentImages()"
     (onRemove)="removeImage($event)"
-    (onAdd)="addImage($event)"
+    (onAdd)="onImageAdded($event)"
     (onOrderChange)="updateImageOrder($event)"
   />
 

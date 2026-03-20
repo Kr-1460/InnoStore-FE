@@ -19,7 +19,9 @@ export class Products {
   activeLang = signal('ru');
   selectedCategoryId = signal<string | null>(null);
 
-  private rawCategories = toSignal(this.categoryService.getAll(), {
+  private rawCategories = toSignal(toObservable(this.activeLang).pipe(
+    switchMap((lang) => this.categoryService.getAll(lang))
+  ), {
     initialValue: [] as ProductCategoryInformation[],
   });
 
@@ -58,7 +60,7 @@ export class Products {
 
     // Filter by Category ID
     // Ensure your ProductDTO has 'productCategoryId'
-    return allProducts.filter((p) => p.productCategoryId === selectedId);
+    return allProducts.filter((p) => p.productGroupId === selectedId);
   });
 
   selectCategory(id: string | null | undefined): void {

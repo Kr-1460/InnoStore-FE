@@ -22,12 +22,17 @@ export interface CreateProductImageModel {
     orderNumber: number | string;
 }
 
+export interface CreateProductImageUrlsModel {
+  ImageUrl: string;
+}
+
 export interface CreateProductModel {
     price: number | string;
-    productCategoryId: string;
+    productGroupId: string;
     localizations: Array<ProductLocalizationModel>;
     sizes: Array<CreateProductSizeModel>;
     colors: Array<CreateProductColorModel>;
+    images: Array<CreateProductImageUrlsModel>;
 }
 
 export interface CreateProductSizeModel {
@@ -87,7 +92,7 @@ export interface ProductDTO {
     name: string;
     description: string;
     price: number | string;
-    productCategoryId: string;
+    productGroupId: string;
     productCategory?: null | ProductCategoryInformation;
     colors?: Array<ProductColorDTO>;
     sizes?: Array<ProductSizeDTO>;
@@ -144,7 +149,7 @@ export interface UpdateProductColorModel {
 
 export interface UpdateProductModel {
     price: number | string;
-    productCategoryId: string;
+    productGroupId: string;
     localizations: Array<ProductLocalizationModel>;
     sizes: Array<UpdateProductSizeModel>;
     colors: Array<UpdateProductColorModel>;

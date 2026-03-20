@@ -1,13 +1,18 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ViewChild } from '@angular/core';
 import { ImageGrid } from '../image-grid/image-grid';
 import { ProductForm } from '../product-form/product-form';
 import {
   CreateProductColorModel,
   CreateProductImageModel,
   CreateProductModel,
+  FileService,
+  ProductService,
 } from '../../../core/generated';
 import { SystemColor } from '../../../components/inno-store-color-selection/inno-store-color-selection';
 import { getSystemColorById } from '../../../core/constants/system-colors';
+import { response } from 'express';
+import { forkJoin, switchMap } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-create-component',
@@ -16,15 +21,23 @@ import { getSystemColorById } from '../../../core/constants/system-colors';
   styleUrl: './create-component.scss',
 })
 export class CreateComponent {
+  @ViewChild(ProductForm) productForm !: ProductForm;
+  private readonly productService = inject(ProductService);
+  private readonly fileService = inject(FileService);
+  private readonly toastr = inject(ToastrService)
+
+  filesToUpload: {file: File, previewUrl: string}[] = [];
+
   productData = signal<CreateProductModel>({
     price: 0,
-    productCategoryId: '',
+    productGroupId: '',
     localizations: [
       { name: '', description: '', languageISOCode: 'ru' },
       { name: '', description: '', languageISOCode: 'en' },
     ],
     sizes: [],
     colors: [{ color: '0', images: [] }],
+    images: [],
   });
 
   colorSpecificImages = signal<Record<string, { imageUrl: string }[]>>({
@@ -112,6 +125,11 @@ export class CreateComponent {
     });
   }
 
+  onImageAdded(event: {file: File, previewUrl: string}){
+    this.filesToUpload.push(event);
+    this.addImage(event.previewUrl)
+  }
+
   updateImageOrder(newUrls: string[]) {
     this.modifyImages(() => {
       return newUrls.map((url, index) => ({
@@ -140,6 +158,37 @@ export class CreateComponent {
 
   saveProduct() {
     console.log('Payload ready for API:', this.productData());
+
+    const uploadTasks = this.filesToUpload.map(f => this.fileService.uploadFile(f.file));
+
+    forkJoin(uploadTasks).pipe(
+      switchMap((responses) => {
+        const urls = responses.map(r => r.fileUrl);
+
+        const finalData = {
+          ...this.productData(),
+          images: urls.map(url => ({
+            ImageUrl: url
+          }))
+        };
+        return this.productService.createProduct(finalData)
+      })
+    ).subscribe({
+      next: (response) => {
+        console.log('product was successfully created', response);
+
+        if(this.productForm){
+          this.productForm.resetForm()
+          this.filesToUpload = []
+        }
+
+        this.toastr.success("The product was successfully added!")
+      },
+      error: (error) => {
+        this.toastr.error("The product wasn't successfully added! Check your data and try again")
+        console.error('smth went wrong', error)
+      }
+    });
   }
 
   handleFormUpdate(updatedPartial: CreateProductModel) {
