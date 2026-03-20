@@ -1,0 +1,36 @@
+name: Build
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+jobs:
+  sonarqube:
+    name: SonarQube
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v6
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.projectKey=innostoreteam_innostore-fe
+            -Dsonar.organization=innostoreteam
+            -Dsonar.qualitygate.wait=true
+
+      - name: Generate SonarCloud Summary
+        if: always() # This ensures the link shows up even if the scan fails!
+        shell: powershell
+        run: |
+          $repo = "innostoreteam_innostore-fe"
+          $prNumber = "${{ github.event.pull_request.number }}"
+          $sonarUrl = "https://sonarcloud.io/dashboard?id=$repo&pullRequest=$prNumber"
+          
+          echo "### SonarCloud Analysis Results" >> $env:GITHUB_STEP_SUMMARY
+          echo "Analysis for this Frontend PR is complete." >> $env:GITHUB_STEP_SUMMARY
+          echo "[View Full Report in SonarCloud]($sonarUrl)" >> $env:GITHUB_STEP_SUMMARY
