@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, input, output, signal } from '@angular/core';
+import { Component, computed, effect, inject, Input, input, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   ReactiveFormsModule,
@@ -22,8 +22,7 @@ import { ProductSizeSection } from './product-size-section/product-size-section'
 import { InnoStoreSwitcher } from '../../../components/inno-store-switcher/inno-store-switcher';
 import { SystemColor } from '../../../components/inno-store-color-selection/inno-store-color-selection';
 import { debounceTime, switchMap } from 'rxjs';
-
-@Component({
+  @Component({
   selector: 'app-product-form',
   imports: [
     CommonModule,
@@ -37,6 +36,7 @@ import { debounceTime, switchMap } from 'rxjs';
   styleUrl: './product-form.scss',
 })
 export class ProductForm {
+  hasImages = input<boolean>(false);
 
   constructor() {
     this.productForm = this.initForm();
@@ -250,6 +250,11 @@ export class ProductForm {
   submit() {
     this.isSubmitted.set(true);
     this.logValidationErrors();
+
+    if (this.productForm.invalid || this.addedColors().length === 0 || !this.hasImages()){
+    this.productForm.markAllAsTouched();
+    return;
+  }
 
     if (this.productForm.invalid) {
       this.productForm.markAllAsTouched();

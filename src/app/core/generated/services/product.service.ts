@@ -29,7 +29,7 @@ export class ProductService {
     getProductById(id: string, languageCode: string, observe?: 'response', options?: RequestOptions<'json'>): Observable<HttpResponse<ProductDTO>>;
     getProductById(id: string, languageCode: string, observe?: 'events', options?: RequestOptions<'json'>): Observable<HttpEvent<ProductDTO>>;
     getProductById(id: string, languageCode: string, observe?: 'body' | 'events' | 'response', options?: RequestOptions<'arraybuffer' | 'blob' | 'json' | 'text'>): Observable<any> {
-        const url = `${this.basePath}/api/Product/getProductById/${languageCode}/${id}`;
+        const url = `${this.basePath}/api/Product/${languageCode}/${id}`;
 
         const requestOptions: any = {
             observe: observe as any,
@@ -45,7 +45,7 @@ export class ProductService {
     getProducts(observe?: 'response', options?: RequestOptions<'json'>): Observable<HttpResponse<Array<ProductDTO>>>;
     getProducts(observe?: 'events', options?: RequestOptions<'json'>): Observable<HttpEvent<Array<ProductDTO>>>;
     getProducts(observe?: 'body' | 'events' | 'response', options?: RequestOptions<'arraybuffer' | 'blob' | 'json' | 'text'>): Observable<any> {
-        const url = `${this.basePath}/api/Product/getProductsByGroupId`;
+        const url = `${this.basePath}/api/Product`;
 
         const requestOptions: any = {
             observe: observe as any,
@@ -77,7 +77,7 @@ export class ProductService {
     updateProduct(productId: string, updateProductModel: UpdateProductModel, observe?: 'response', options?: RequestOptions<'json'>): Observable<HttpResponse<ProductDTO>>;
     updateProduct(productId: string, updateProductModel: UpdateProductModel, observe?: 'events', options?: RequestOptions<'json'>): Observable<HttpEvent<ProductDTO>>;
     updateProduct(productId: string, updateProductModel: UpdateProductModel, observe?: 'body' | 'events' | 'response', options?: RequestOptions<'arraybuffer' | 'blob' | 'json' | 'text'>): Observable<any> {
-        const url = `${this.basePath}/api/Product/updateProduct/${productId}`;
+        const url = `${this.basePath}/api/Product/${productId}`;
 
         const requestOptions: any = {
             observe: observe as any,
@@ -93,7 +93,7 @@ export class ProductService {
     deleteProduct(productId: string, observe?: 'response', options?: RequestOptions<'json'>): Observable<HttpResponse<any>>;
     deleteProduct(productId: string, observe?: 'events', options?: RequestOptions<'json'>): Observable<HttpEvent<any>>;
     deleteProduct(productId: string, observe?: 'body' | 'events' | 'response', options?: RequestOptions<'arraybuffer' | 'blob' | 'json' | 'text'>): Observable<any> {
-        const url = `${this.basePath}/api/Product/deleteProduct/${productId}`;
+        const url = `${this.basePath}/api/Product/${productId}`;
 
         const requestOptions: any = {
             observe: observe as any,

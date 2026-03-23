@@ -5,6 +5,7 @@ import { ProductCategoryService, ProductService } from '../../core/generated/ser
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ProductCategoryInformation, ProductDTO } from '../../core/generated';
 import { filter, switchMap } from 'rxjs';
+import { ProductForm } from '../product-management/product-form/product-form';
 
 @Component({
   selector: 'app-products',
@@ -13,60 +14,43 @@ import { filter, switchMap } from 'rxjs';
   styleUrl: './products.scss',
 })
 export class Products {
-  private categoryService = inject(ProductCategoryService);
-  private productService = inject(ProductService);
+  private productGroupService = inject(ProductCategoryService);
 
-  activeLang = signal('ru');
-  selectedCategoryId = signal<string | null>(null);
+  private activeLang = signal<string>('ru')
 
-  private rawCategories = toSignal(toObservable(this.activeLang).pipe(
-    switchMap((lang) => this.categoryService.getAll(lang))
-  ), {
-    initialValue: [] as ProductCategoryInformation[],
+  private groups = toSignal(toObservable(this.activeLang).pipe(
+    switchMap((lang) => this.productGroupService.getAll(lang))
+  ),
+  {
+    initialValue: [],
   });
 
-  private rawProducts = toSignal(this.productService.getProducts(), {
-    initialValue: [] as ProductDTO[],
+  protected categories = computed(() => {
+    const groupNames = this.groups();
+    const mapped = groupNames.map((g) => ({
+      id: g.id,
+      name: g.name || 'Unnamed'
+    }));
+
+    return [{id: 'Все', name: 'Все'}, ...mapped];
   });
 
-  uiCategories = computed(() => {
-    const list = this.rawCategories();
-    const lang = this.activeLang();
+  protected selectedCategory = signal<string | null>('Все');
 
-    const mapped = list.map((cat) => {
-      const loc =
-        cat.localizations?.find((l) => l.languageISOCode === lang) || cat.localizations?.[0];
-      return {
-        id: cat.id,
-        name: loc?.name || 'Unnamed',
-      };
-    });
+  protected filteredProducts = computed(() => {
+    const currentCategory = this.selectedCategory();
+    const allGroups = this.groups();
 
-    // Add "All" option at the beginning
-    return [{ id: null, name: 'Все' }, ...mapped];
-  });
-
-  filteredProducts = computed(() => {
-    const allProducts = this.rawProducts();
-    const selectedId = this.selectedCategoryId();
-
-    // If no data yet
-    if (!allProducts) return [];
-
-    // If "All" is selected (id is null), return everything
-    if (!selectedId) {
-      return allProducts;
+    if (currentCategory === 'Все') {
+      return allGroups.flatMap((group) => group.products || []);
     }
 
-    // Filter by Category ID
-    // Ensure your ProductDTO has 'productCategoryId'
-    return allProducts.filter((p) => p.productGroupId === selectedId);
+    const targetGroup = allGroups.find((g) => g.id=== currentCategory);
+    return targetGroup?.products || [];
   });
 
-  selectCategory(id: string | null | undefined): void {
-    console.log(id);
-    if (id != undefined) {
-      this.selectedCategoryId.set(id);
-    }
+  protected selectCategory(category: string | undefined): void {
+    if(!category)return;
+    this.selectedCategory.set(category);
   }
 }

@@ -9,6 +9,7 @@
 
   <app-product-form
     class="w-full"
+    [hasImages]="filesToUpload().length>0"
     [initialData]="productData()"
     [selectedColorId]="activeColorId() || ''"
     [addedColors]="addedColorsUi()"

@@ -87,6 +87,7 @@ export class InnoStoreCombobox<T extends { id: string | number }> implements Con
 
   onInputFocus() {
     this.isOpened.set(true);
+    this.searchQuery.set('');
     // Optional: Clear text on focus to allow fresh search?
     // Or keep it to refine search. Up to UX preference.
     this.onTouched();

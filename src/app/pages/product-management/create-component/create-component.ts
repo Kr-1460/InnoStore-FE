@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal, ViewChild } from '@angular/core';
+import { Component, computed, inject, Signal, signal, ViewChild } from '@angular/core';
 import { ImageGrid } from '../image-grid/image-grid';
 import { ProductForm } from '../product-form/product-form';
 import {
@@ -13,6 +13,7 @@ import { getSystemColorById } from '../../../core/constants/system-colors';
 import { response } from 'express';
 import { forkJoin, switchMap } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-create-component',
@@ -25,8 +26,24 @@ export class CreateComponent {
   private readonly productService = inject(ProductService);
   private readonly fileService = inject(FileService);
   private readonly toastr = inject(ToastrService)
+  private readonly router = inject(Router)
 
-  filesToUpload: {file: File, previewUrl: string}[] = [];
+  private translations: any = {
+    ru: {
+      successAdd: "продукт успешно добавлен",
+      error: "ошибка добавления продукта. проверьте данные и повторите попытку"
+    },
+    en: {
+      successAdd: "product was successfully added",
+      error: "The product wasn't successfully added! Check your data and try again"
+    }
+  }
+
+  private currentLang = computed(() => this.productData().localizations[0].languageISOCode || 'ru');
+
+  filesToUpload = signal<{file: File, previewUrl: string}[]>([]);
+
+  protected hasImages = computed(() => this.filesToUpload.length>0);
 
   productData = signal<CreateProductModel>({
     price: 0,
@@ -113,6 +130,7 @@ export class CreateComponent {
 
   removeImage(index: number) {
     this.modifyImages((imgs) => imgs.filter((_, i) => i !== index));
+    this.filesToUpload.update(prev => prev.filter((_, i) => i !== index));
   }
 
   addImage(url: string) {
@@ -126,7 +144,7 @@ export class CreateComponent {
   }
 
   onImageAdded(event: {file: File, previewUrl: string}){
-    this.filesToUpload.push(event);
+    this.filesToUpload.update(prev => [...prev, event]);
     this.addImage(event.previewUrl)
   }
 
@@ -159,7 +177,9 @@ export class CreateComponent {
   saveProduct() {
     console.log('Payload ready for API:', this.productData());
 
-    const uploadTasks = this.filesToUpload.map(f => this.fileService.uploadFile(f.file));
+    const uploadTasks = this.filesToUpload().map(f => this.fileService.uploadFile(f.file));
+    const lang = this.currentLang();
+    const url = this.router.url;
 
     forkJoin(uploadTasks).pipe(
       switchMap((responses) => {
@@ -177,15 +197,16 @@ export class CreateComponent {
       next: (response) => {
         console.log('product was successfully created', response);
 
-        if(this.productForm){
-          this.productForm.resetForm()
-          this.filesToUpload = []
+        this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
+          this.router.navigate([url])
         }
 
-        this.toastr.success("The product was successfully added!")
+        )
+
+        this.toastr.success(this.translations[lang].successAdd)
       },
       error: (error) => {
-        this.toastr.error("The product wasn't successfully added! Check your data and try again")
+        this.toastr.error(this.translations[lang].error)
         console.error('smth went wrong', error)
       }
     });

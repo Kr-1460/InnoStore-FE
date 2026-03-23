@@ -72,6 +72,8 @@ export interface ProductCategoryDTO {
 
 export interface ProductCategoryInformation {
     id?: string;
+    name: string,
+    products?: Array<ProductDTO>,
     localizations: Array<ProductCategoryLocalizationModel>;
 }
 

@@ -26,16 +26,16 @@
   </div>
 
   <div class="flex gap-2 mb-8 overflow-x-auto pb-2 scrollbar-hide">
-    @for (cat of uiCategories(); track cat.id) {
+    @for (cat of categories(); track cat.id) {
       <button
         class="px-5 py-2.5 rounded-full font-medium text-sm transition-all whitespace-nowrap border"
-        [class.bg-gray-900]="selectedCategoryId() === cat.id"
-        [class.text-white]="selectedCategoryId() === cat.id"
-        [class.border-gray-900]="selectedCategoryId() === cat.id"
-        [class.bg-white]="selectedCategoryId() !== cat.id"
-        [class.text-gray-600]="selectedCategoryId() !== cat.id"
-        [class.border-gray-200]="selectedCategoryId() !== cat.id"
-        [class.hover:border-gray-400]="selectedCategoryId() !== cat.id"
+        [class.bg-gray-900]="selectedCategory() === cat.id"
+        [class.text-white]="selectedCategory() === cat.id"
+        [class.border-gray-900]="selectedCategory() === cat.id"
+        [class.bg-white]="selectedCategory() !== cat.id"
+        [class.text-gray-600]="selectedCategory() !== cat.id"
+        [class.border-gray-200]="selectedCategory() !== cat.id"
+        [class.hover:border-gray-400]="selectedCategory() !== cat.id"
         (click)="selectCategory(cat.id)"
       >
         {{ cat.name }}
