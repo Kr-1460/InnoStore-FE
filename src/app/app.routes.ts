@@ -5,6 +5,7 @@ import { ProductDetail } from './pages/product-detail/product-detail';
 import { Profile } from './pages/profile/profile';
 import { AuthGuard } from '@auth0/auth0-angular';
 import { AboutComponent } from './about-page/about-page';
+import { APP_ROUTES } from './configs/app-routes.config'; 
 
 export const routes: Routes = [
   {
@@ -16,24 +17,23 @@ export const routes: Routes = [
         component: MainLayout,
         children: [
           {
-            path: 'products',
+            path: APP_ROUTES.PRODUCTS,
             component: Products
           },
           {
-            path: 'product/:id',
+            path: APP_ROUTES.PRODUCT_DETAIL,
             component: ProductDetail
           },
-
           {
-            path: 'about', 
+            path: APP_ROUTES.ABOUT, 
             component: AboutComponent
           }
         ]
       },
-          {
-            path: 'profile',
-            component: Profile
-          },
+      {
+        path: APP_ROUTES.PROFILE,
+        component: Profile
+      },
     ]
   }
 ];

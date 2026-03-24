@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { ROUTE_LINKS } from '../configs/app-routes.config';
 
 @Component({
   selector: 'app-about',
@@ -15,7 +16,6 @@ export class AboutComponent {
   constructor(private router: Router) {}
 
   goToCatalog() {
-    this.router.navigate(['/products']);
+    this.router.navigate([ROUTE_LINKS.PRODUCTS]);
   }
-
 }
