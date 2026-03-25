@@ -25,16 +25,23 @@ export class ProductContentSection {
   // Prepare categories for the Combobox
   uiCategories = computed(() => {
     const lang = this.activeLang();
-    return (this.categories() || []).map((cat) => ({
-      id: cat.id || '',
-      name: (cat as any).name || 'Unnamed'
-    }));
+    const cats = this.categories() || [];
+
+    return cats.map((cat) => {
+      const translation = cat.localizations?.find(l => l.languageISOCode ===lang);
+
+      return{
+        id: cat.id || '',
+        name:translation?.name || cat.localizations?.[0]?.name || 'Unnamed'
+      }
+    })
+
   });
 
   // Helper to pass the currently selected category to the Combobox
   // The Combobox expects an array (T[]), but we only select one.
   selectedCategoryArray = computed(() => {
-    const selectedId = this.parentForm().get('productGroupId')?.value;
+    const selectedId = this.parentForm().get('productCategoryId')?.value;
     if (!selectedId) return [];
 
     const found = this.uiCategories().find((c) => c.id === selectedId);
@@ -52,7 +59,7 @@ export class ProductContentSection {
   // --- Handlers ---
 
   onCategorySelect(id: string | number) {
-    this.parentForm().get('productGroupId')?.setValue(id);
+    this.parentForm().get('productCategoryId')?.setValue(id);
   }
 
   // --- Validation Helpers ---

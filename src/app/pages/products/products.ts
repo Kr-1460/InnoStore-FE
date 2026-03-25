@@ -14,23 +14,35 @@ import { ProductForm } from '../product-management/product-form/product-form';
   styleUrl: './products.scss',
 })
 export class Products {
-  private productGroupService = inject(ProductCategoryService);
+  private productCategoryService = inject(ProductCategoryService);
+  private productService = inject(ProductService);
 
   private activeLang = signal<string>('ru')
 
+  private allProducts = toSignal(toObservable(this.activeLang).pipe(
+    switchMap((lang) => this.productService.getProducts(lang))
+  ),
+    { initialValue: [] as ProductDTO[] },
+  );
+
   private groups = toSignal(toObservable(this.activeLang).pipe(
-    switchMap((lang) => this.productGroupService.getAll(lang))
+    switchMap((lang) => this.productCategoryService.getAll(lang))
   ),
   {
-    initialValue: [],
+    initialValue: [] as ProductCategoryInformation[]
   });
 
   protected categories = computed(() => {
+    const lang = this.activeLang();
     const groupNames = this.groups();
-    const mapped = groupNames.map((g) => ({
-      id: g.id,
-      name: g.name || 'Unnamed'
-    }));
+
+    const mapped = groupNames.map((g) => {
+      const translation = g.localizations?.find(l => l.languageISOCode === lang);
+      return {
+        id: g.id,
+        name: translation?.name || g.localizations?.[0]?.name || 'Unnamed'
+      };
+    });
 
     return [{id: 'Все', name: 'Все'}, ...mapped];
   });
@@ -38,15 +50,16 @@ export class Products {
   protected selectedCategory = signal<string | null>('Все');
 
   protected filteredProducts = computed(() => {
+    const products = this.allProducts() || [];
     const currentCategory = this.selectedCategory();
+
     const allGroups = this.groups();
 
     if (currentCategory === 'Все') {
-      return allGroups.flatMap((group) => group.products || []);
+      return products;
     }
 
-    const targetGroup = allGroups.find((g) => g.id=== currentCategory);
-    return targetGroup?.products || [];
+    return products.filter(p => p?.productCategoryId === currentCategory);
   });
 
   protected selectCategory(category: string | undefined): void {

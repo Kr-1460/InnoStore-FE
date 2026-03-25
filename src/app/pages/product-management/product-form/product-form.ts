@@ -38,16 +38,17 @@ import { debounceTime, switchMap } from 'rxjs';
 export class ProductForm {
   hasImages = input<boolean>(false);
 
+  private isFormInitialised = false;
+
   constructor() {
     this.productForm = this.initForm();
-
     // 1. EFFECT: Sync data from Parent -> Form (CLEAN VERSION)
     effect(() => {
       const data = this.initialData();
 
       // Stop if no data is provided
       if (!data) return;
-      if(this.productForm.dirty) return;
+      if(this.isFormInitialised) return;
       // Check if data is actually different to avoid unnecessary UI repaints (Optional but good)
       // if (JSON.stringify(data) === JSON.stringify(this.mapFormToModel())) return;
 
@@ -66,10 +67,11 @@ export class ProductForm {
       this.productForm.patchValue(
         {
           price: data.price,
-          productGroupId: data.productGroupId,
+          productCategoryId: data.productCategoryId,
         },
         { emitEvent: false },
       );
+      this.isFormInitialised = true;
     });
 
     // 2. SUBSCRIPTION: Form -> Parent
@@ -87,12 +89,23 @@ export class ProductForm {
   languageOptions = signal<string[]>(['ru', 'en']);
   isSubmitted = signal(false);
   // --- Data ---
-  categories = toSignal(toObservable(this.activeLang).pipe(
+  rawCategories = toSignal(toObservable(this.activeLang).pipe(
     switchMap((lang) => this.categoryService.getAll(lang))
   ), {
     initialValue: [] as ProductCategoryInformation[],
   });
 
+categories = computed(() => {
+  const currentLang = this.activeLang();
+  return this.rawCategories().map((g) => {
+    const loc = g.localizations?.find((l: any) => l.languageISOCode === currentLang) || g.localizations?.[0];
+
+    return{
+      ...g,
+      name: loc?.name || 'Unnamed'
+    };
+  });
+});
   // --- Inputs / Outputs ---
   initialData = input.required<CreateProductModel>();
   selectedColorId = input.required<string>();
@@ -165,7 +178,7 @@ export class ProductForm {
 
   private initForm(): FormGroup {
     return this.fb.group({
-      productGroupId: ['', Validators.required],
+      productCategoryId: ['', Validators.required],
       price: [0, [Validators.required, Validators.min(1)]],
       localizations: this.fb.array<FormGroup>([]),
       sizes: this.fb.array<FormGroup>([], [this.minArrayLength(1)]),
@@ -220,7 +233,7 @@ export class ProductForm {
     console.log('Form Status:', form.status);
 
     // 1. Check Root Fields
-    ['price', 'productGroupId'].forEach((key) => {
+    ['price', 'productCategoryId'].forEach((key) => {
       if (form.get(key)?.invalid)
         console.error(`Root Field '${key}' is invalid`, form.get(key)?.errors);
     });

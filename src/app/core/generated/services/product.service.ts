@@ -41,11 +41,11 @@ export class ProductService {
         return this.httpClient.get(url, requestOptions);
     }
 
-    getProducts(observe?: 'body', options?: RequestOptions<'json'>): Observable<Array<ProductDTO>>;
-    getProducts(observe?: 'response', options?: RequestOptions<'json'>): Observable<HttpResponse<Array<ProductDTO>>>;
-    getProducts(observe?: 'events', options?: RequestOptions<'json'>): Observable<HttpEvent<Array<ProductDTO>>>;
-    getProducts(observe?: 'body' | 'events' | 'response', options?: RequestOptions<'arraybuffer' | 'blob' | 'json' | 'text'>): Observable<any> {
-        const url = `${this.basePath}/api/Product`;
+    getProducts(languageCode: string, observe?: 'body', options?: RequestOptions<'json'>): Observable<Array<ProductDTO>>;
+    getProducts(languageCode: string, observe?: 'response', options?: RequestOptions<'json'>): Observable<HttpResponse<Array<ProductDTO>>>;
+    getProducts(languageCode: string, observe?: 'events', options?: RequestOptions<'json'>): Observable<HttpEvent<Array<ProductDTO>>>;
+    getProducts(languageCode: string, observe?: 'body' | 'events' | 'response', options?: RequestOptions<'arraybuffer' | 'blob' | 'json' | 'text'>): Observable<any> {
+        const url = `${this.basePath}/api/Product?languageCode=${languageCode}`;
 
         const requestOptions: any = {
             observe: observe as any,

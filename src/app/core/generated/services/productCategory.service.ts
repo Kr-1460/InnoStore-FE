@@ -29,7 +29,7 @@ export class ProductCategoryService {
     getCategoryById(id: string, languageCode: string, observe?: 'response', options?: RequestOptions<'json'>): Observable<HttpResponse<ProductCategoryDTO>>;
     getCategoryById(id: string, languageCode: string, observe?: 'events', options?: RequestOptions<'json'>): Observable<HttpEvent<ProductCategoryDTO>>;
     getCategoryById(id: string, languageCode: string, observe?: 'body' | 'events' | 'response', options?: RequestOptions<'arraybuffer' | 'blob' | 'json' | 'text'>): Observable<any> {
-        const url = `${this.basePath}/api/ProductGroup/${languageCode}/${id}`;
+        const url = `${this.basePath}/api/ProductCategory/${languageCode}/${id}`;
 
         const requestOptions: any = {
             observe: observe as any,
@@ -45,7 +45,7 @@ export class ProductCategoryService {
     getAll(languageCode: string, observe?: 'response', options?: RequestOptions<'json'>): Observable<HttpResponse<Array<ProductCategoryInformation>>>;
     getAll(languageCode: string, observe?: 'events', options?: RequestOptions<'json'>): Observable<HttpEvent<Array<ProductCategoryInformation>>>;
     getAll(languageCode: string, observe?: 'body' | 'events' | 'response', options?: RequestOptions<'arraybuffer' | 'blob' | 'json' | 'text'>): Observable<any> {
-        const url = `${this.basePath}/api/ProductGroup/${languageCode}`;
+        const url = `${this.basePath}/api/ProductCategory?languageCode=${languageCode}`;
 
         const requestOptions: any = {
             observe: observe as any,
@@ -61,7 +61,7 @@ export class ProductCategoryService {
     createCategory(createProductCategoryModel: CreateProductCategoryModel, observe?: 'response', options?: RequestOptions<'json'>): Observable<HttpResponse<ProductCategoryDTO>>;
     createCategory(createProductCategoryModel: CreateProductCategoryModel, observe?: 'events', options?: RequestOptions<'json'>): Observable<HttpEvent<ProductCategoryDTO>>;
     createCategory(createProductCategoryModel: CreateProductCategoryModel, observe?: 'body' | 'events' | 'response', options?: RequestOptions<'arraybuffer' | 'blob' | 'json' | 'text'>): Observable<any> {
-        const url = `${this.basePath}/api/ProductGroup`;
+        const url = `${this.basePath}/api/ProductCategory`;
 
         const requestOptions: any = {
             observe: observe as any,
@@ -73,11 +73,11 @@ export class ProductCategoryService {
         return this.httpClient.post(url, createProductCategoryModel, requestOptions);
     }
 
-    updateCategory(productGroupId: string, updateProductCategoryModel: UpdateProductCategoryModel, observe?: 'body', options?: RequestOptions<'json'>): Observable<ProductCategoryDTO>;
-    updateCategory(productGroupId: string, updateProductCategoryModel: UpdateProductCategoryModel, observe?: 'response', options?: RequestOptions<'json'>): Observable<HttpResponse<ProductCategoryDTO>>;
-    updateCategory(productGroupId: string, updateProductCategoryModel: UpdateProductCategoryModel, observe?: 'events', options?: RequestOptions<'json'>): Observable<HttpEvent<ProductCategoryDTO>>;
-    updateCategory(productGroupId: string, updateProductCategoryModel: UpdateProductCategoryModel, observe?: 'body' | 'events' | 'response', options?: RequestOptions<'arraybuffer' | 'blob' | 'json' | 'text'>): Observable<any> {
-        const url = `${this.basePath}/api/ProductGroup/${productGroupId}`;
+    updateCategory(productCategoryId: string, updateProductCategoryModel: UpdateProductCategoryModel, observe?: 'body', options?: RequestOptions<'json'>): Observable<ProductCategoryDTO>;
+    updateCategory(productCategoryId: string, updateProductCategoryModel: UpdateProductCategoryModel, observe?: 'response', options?: RequestOptions<'json'>): Observable<HttpResponse<ProductCategoryDTO>>;
+    updateCategory(productCategoryId: string, updateProductCategoryModel: UpdateProductCategoryModel, observe?: 'events', options?: RequestOptions<'json'>): Observable<HttpEvent<ProductCategoryDTO>>;
+    updateCategory(productCategoryId: string, updateProductCategoryModel: UpdateProductCategoryModel, observe?: 'body' | 'events' | 'response', options?: RequestOptions<'arraybuffer' | 'blob' | 'json' | 'text'>): Observable<any> {
+        const url = `${this.basePath}/api/ProductCategory/${productCategoryId}`;
 
         const requestOptions: any = {
             observe: observe as any,
@@ -89,11 +89,11 @@ export class ProductCategoryService {
         return this.httpClient.put(url, updateProductCategoryModel, requestOptions);
     }
 
-    deleteCategory(productGroupId: string, observe?: 'body', options?: RequestOptions<'json'>): Observable<any>;
-    deleteCategory(productGroupId: string, observe?: 'response', options?: RequestOptions<'json'>): Observable<HttpResponse<any>>;
-    deleteCategory(productGroupId: string, observe?: 'events', options?: RequestOptions<'json'>): Observable<HttpEvent<any>>;
-    deleteCategory(productGroupId: string, observe?: 'body' | 'events' | 'response', options?: RequestOptions<'arraybuffer' | 'blob' | 'json' | 'text'>): Observable<any> {
-        const url = `${this.basePath}/api/ProductGroup/${productGroupId}`;
+    deleteCategory(productCategoryId: string, observe?: 'body', options?: RequestOptions<'json'>): Observable<any>;
+    deleteCategory(productCategoryId: string, observe?: 'response', options?: RequestOptions<'json'>): Observable<HttpResponse<any>>;
+    deleteCategory(productCategoryId: string, observe?: 'events', options?: RequestOptions<'json'>): Observable<HttpEvent<any>>;
+    deleteCategory(productCategoryId: string, observe?: 'body' | 'events' | 'response', options?: RequestOptions<'arraybuffer' | 'blob' | 'json' | 'text'>): Observable<any> {
+        const url = `${this.basePath}/api/ProductCategory/${productCategoryId}`;
 
         const requestOptions: any = {
             observe: observe as any,

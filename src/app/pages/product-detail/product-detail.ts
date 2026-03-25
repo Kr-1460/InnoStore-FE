@@ -15,6 +15,7 @@ import { getSystemColorById, SYSTEM_COLORS } from '../../core/constants/system-c
 export class ProductDetail {
   private route = inject(ActivatedRoute);
   private productService = inject(ProductService);
+  private activeLang = signal<string>('ru')
 
   // Signals
   protected readonly product = signal<ProductDTO | null>(null);
@@ -69,7 +70,7 @@ export class ProductDetail {
   }
 
   private loadProduct(id: string): void {
-    this.productService.getProductById(id, 'en').subscribe({
+    this.productService.getProductById(id, this.activeLang()).subscribe({
       next: (data) => {
         this.product.set(data);
         this.initDefaults(data);

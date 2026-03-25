@@ -7,10 +7,10 @@
         [options]="uiCategories()"
         labelKey="name"
         placeholder="Выберите категорию..."
-        formControlName="productGroupId"
+        formControlName="productCategoryId"
       />
 
-      @if (isFieldInvalid('productGroupId')) {
+      @if (isFieldInvalid('productCategoryId')) {
         <span class="text-xs text-red-500 ml-1">Выберите категорию из списка</span>
       }
     </div>

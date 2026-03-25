@@ -41,20 +41,19 @@ export class CreateComponent {
 
   private currentLang = computed(() => this.productData().localizations[0].languageISOCode || 'ru');
 
-  filesToUpload = signal<{file: File, previewUrl: string}[]>([]);
+  filesToUpload = signal<{file: File, previewUrl: string, colorId: string}[]>([]);
 
   protected hasImages = computed(() => this.filesToUpload.length>0);
 
   productData = signal<CreateProductModel>({
     price: 0,
-    productGroupId: '',
+    productCategoryId: '',
     localizations: [
       { name: '', description: '', languageISOCode: 'ru' },
       { name: '', description: '', languageISOCode: 'en' },
     ],
     sizes: [],
     colors: [{ color: '0', images: [] }],
-    images: [],
   });
 
   colorSpecificImages = signal<Record<string, { imageUrl: string }[]>>({
@@ -144,7 +143,9 @@ export class CreateComponent {
   }
 
   onImageAdded(event: {file: File, previewUrl: string}){
-    this.filesToUpload.update(prev => [...prev, event]);
+    const activeId = this.activeColorId();
+    if(!activeId) return;
+    this.filesToUpload.update(prev => [...prev, { ...event, colorId: activeId }]);
     this.addImage(event.previewUrl)
   }
 
@@ -177,20 +178,38 @@ export class CreateComponent {
   saveProduct() {
     console.log('Payload ready for API:', this.productData());
 
-    const uploadTasks = this.filesToUpload().map(f => this.fileService.uploadFile(f.file));
+    const files = this.filesToUpload();
+    const uploadTasks = files.map(f => this.fileService.uploadFile(f.file));
     const lang = this.currentLang();
     const url = this.router.url;
 
     forkJoin(uploadTasks).pipe(
       switchMap((responses) => {
-        const urls = responses.map(r => r.fileUrl);
+        const uploadedData = responses.map((res, index) => ({
+        url: res.fileUrl,
+        colorId: files[index].colorId
+      }));
 
-        const finalData = {
-          ...this.productData(),
-          images: urls.map(url => ({
-            ImageUrl: url
-          }))
-        };
+        const productData = this.productData();
+
+        const finalData: CreateProductModel = {
+        price: productData.price,
+        productCategoryId: productData.productCategoryId,
+        localizations: productData.localizations,
+        sizes: productData.sizes,
+        colors: productData.colors.map(color => {
+          const colorImages = uploadedData
+            .filter(d => d.colorId === color.color)
+            .map((d, index) => ({
+              imageUrl: d.url,
+              orderNumber: index
+            }));
+        return {
+            color: color.color,
+            images: colorImages
+          };
+        })
+      };
         return this.productService.createProduct(finalData)
       })
     ).subscribe({
