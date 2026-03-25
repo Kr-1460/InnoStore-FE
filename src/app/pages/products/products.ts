@@ -6,6 +6,7 @@ import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ProductCategoryInformation, ProductDTO } from '../../core/generated';
 import { filter, switchMap } from 'rxjs';
 import { ProductForm } from '../product-management/product-form/product-form';
+import { LOCALISATION } from '../../core/constants/localisation';
 
 @Component({
   selector: 'app-products',
@@ -13,6 +14,7 @@ import { ProductForm } from '../product-management/product-form/product-form';
   templateUrl: './products.html',
   styleUrl: './products.scss',
 })
+
 export class Products {
   private productCategoryService = inject(ProductCategoryService);
   private productService = inject(ProductService);
@@ -32,22 +34,28 @@ export class Products {
     initialValue: [] as ProductCategoryInformation[]
   });
 
+  protected translations = computed(() => {
+    const languageKey = this.activeLang() as keyof typeof LOCALISATION;
+    return LOCALISATION[languageKey]
+  })
+
   protected categories = computed(() => {
-    const lang = this.activeLang();
+    const language = this.activeLang();
+    const langKey = language as keyof typeof LOCALISATION;
     const groupNames = this.groups();
 
     const mapped = groupNames.map((g) => {
-      const translation = g.localizations?.find(l => l.languageISOCode === lang);
+      const translation = g.localizations?.find(l => l.languageISOCode === language);
       return {
         id: g.id,
         name: translation?.name || g.localizations?.[0]?.name || 'Unnamed'
       };
     });
 
-    return [{id: 'Все', name: 'Все'}, ...mapped];
+    return [{id: null, name: LOCALISATION[langKey].all}, ...mapped];
   });
 
-  protected selectedCategory = signal<string | null>('Все');
+  protected selectedCategory = signal<string | null>(null);
 
   protected filteredProducts = computed(() => {
     const products = this.allProducts() || [];
@@ -55,15 +63,14 @@ export class Products {
 
     const allGroups = this.groups();
 
-    if (currentCategory === 'Все') {
+    if (currentCategory === null) {
       return products;
     }
 
     return products.filter(p => p?.productCategoryId === currentCategory);
   });
 
-  protected selectCategory(category: string | undefined): void {
-    if(!category)return;
-    this.selectedCategory.set(category);
+  protected selectCategory(category: string | null | undefined): void {
+    this.selectedCategory.set(category ?? null);
   }
 }

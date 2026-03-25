@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { InnoStoreCombobox } from './inno-store-combobox';
 
 describe('InnoStoreCombobox', () => {

@@ -9,6 +9,7 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
   styleUrl: './image-tile.scss',
   providers: [provideIcons({ bootstrapGripVertical, bootstrapTrash })],
 })
+
 export class ImageTile {
   src = input.required<string>();
   index = input.required<number>();

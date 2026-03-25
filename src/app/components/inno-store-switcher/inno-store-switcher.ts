@@ -6,8 +6,10 @@ import { Component, input, output } from '@angular/core';
   templateUrl: './inno-store-switcher.html',
   styleUrl: './inno-store-switcher.scss',
 })
+
 export class InnoStoreSwitcher {
   options = input.required<string[]>();
+
   active = input.required<string>();
 
   errorOptions = input<string[]>([]);

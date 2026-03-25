@@ -1,7 +1,8 @@
-import { Component, input, output, signal } from '@angular/core';
+import { Component, computed, input, output, signal } from '@angular/core';
 import { SystemColor } from '../../../../components/inno-store-color-selection/inno-store-color-selection';
 import { InnoStoreCombobox } from '../../../../components/inno-store-combobox/inno-store-combobox';
 import { SYSTEM_COLORS } from '../../../../core/constants/system-colors';
+import { LOCALISATION } from '../../../../core/constants/localisation';
 
 @Component({
   selector: 'app-product-color-section',
@@ -9,6 +10,7 @@ import { SYSTEM_COLORS } from '../../../../core/constants/system-colors';
   templateUrl: './product-color-section.html',
   styleUrl: './product-color-section.scss',
 })
+
 export class ProductColorSection {
   selectedColors = input.required<SystemColor[]>();
   activeColorId = input.required<string | undefined>();
@@ -44,4 +46,11 @@ export class ProductColorSection {
       this.isSelecting.set(false);
     }
   }
+
+  private activeLang = signal<string>('ru')
+
+  protected translations = computed(() => {
+    const languageKey = this.activeLang() as keyof typeof LOCALISATION;
+    return LOCALISATION[languageKey]
+  })
 }

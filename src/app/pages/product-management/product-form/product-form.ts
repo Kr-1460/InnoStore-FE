@@ -26,7 +26,7 @@ import { debounceTime, switchMap } from 'rxjs';
   selector: 'app-product-form',
   imports: [
     CommonModule,
-    ReactiveFormsModule, // Важно!
+    ReactiveFormsModule,
     ProductContentSection,
     ProductColorSection,
     ProductSizeSection,
@@ -50,7 +50,6 @@ export class ProductForm {
       if (!data) return;
       if(this.isFormInitialised) return;
       // Check if data is actually different to avoid unnecessary UI repaints (Optional but good)
-      // if (JSON.stringify(data) === JSON.stringify(this.mapFormToModel())) return;
 
       // A. Build new FormArrays in memory (this doesn't trigger events yet)
       const newLocArray = this.rebuildLocalizations(data.localizations);
@@ -85,7 +84,7 @@ export class ProductForm {
   private fb = inject(FormBuilder);
   private categoryService = inject(ProductCategoryService);
 
-    activeLang = signal<string>('ru');
+  activeLang = signal<string>('ru');
   languageOptions = signal<string[]>(['ru', 'en']);
   isSubmitted = signal(false);
   // --- Data ---
@@ -98,11 +97,11 @@ export class ProductForm {
 categories = computed(() => {
   const currentLang = this.activeLang();
   return this.rawCategories().map((g) => {
-    const loc = g.localizations?.find((l: any) => l.languageISOCode === currentLang) || g.localizations?.[0];
+    const localisation = g.localizations?.find((l: any) => l.languageISOCode === currentLang) || g.localizations?.[0];
 
     return{
       ...g,
-      name: loc?.name || 'Unnamed'
+      name: localisation?.name || 'Unnamed'
     };
   });
 });
@@ -119,20 +118,15 @@ categories = computed(() => {
   onSave = output<CreateProductModel>();
   onSubmitForm = output();
 
-  // --- State ---
-
-
   // --- Reactive Form ---
   productForm: FormGroup;
 
+  private rebuildLocalizations(localisations: any[] | undefined): FormArray<FormGroup> {
+    const formLangArray = this.fb.array<FormGroup>([]);
 
-  private rebuildLocalizations(locs: any[] | undefined): FormArray<FormGroup> {
-    // FIX: Explicitly type the array to hold FormGroups
-    const arr = this.fb.array<FormGroup>([]);
-
-    if (locs && locs.length > 0) {
-      locs.forEach((loc) => {
-        arr.push(
+    if (localisations && localisations.length > 0) {
+      localisations.forEach((loc) => {
+        formLangArray.push(
           this.fb.group({
             languageISOCode: [loc.languageISOCode],
             name: [loc.name, Validators.required],
@@ -142,15 +136,14 @@ categories = computed(() => {
       });
     } else {
       this.languageOptions().forEach((lang) => {
-        arr.push(this.createLocalizationGroup(lang));
+        formLangArray.push(this.createLocalizationGroup(lang));
       });
     }
-    return arr;
+    return formLangArray;
   }
 
   private rebuildSizes(sizes: any[] | undefined): FormArray<FormGroup> {
-    // FIX: Explicitly type the array to hold FormGroups
-    const arr = this.fb.array<FormGroup>([], [this.minArrayLength(1)]);
+    const formLangArray = this.fb.array<FormGroup>([], [this.minArrayLength(1)]);
 
     if (sizes && sizes.length > 0) {
       sizes.forEach((size) => {
@@ -170,10 +163,10 @@ categories = computed(() => {
             );
           });
         }
-        arr.push(sizeGroup);
+        formLangArray.push(sizeGroup);
       });
     }
-    return arr;
+    return formLangArray;
   }
 
   private initForm(): FormGroup {
@@ -227,6 +220,7 @@ categories = computed(() => {
   removeSize(index: number) {
     this.sizesArray.removeAt(index);
   }
+
   logValidationErrors() {
     const form = this.productForm;
     console.group('Form Validation Debug');
@@ -239,8 +233,9 @@ categories = computed(() => {
     });
 
     // 2. Check Localizations (The likely culprit)
-    const locs = form.get('localizations') as FormArray;
-    locs.controls.forEach((group, index) => {
+    const localisations = form.get('localizations') as FormArray;
+
+    localisations.controls.forEach((group, index) => {
       if (group.invalid) {
         console.error(
           `Localization [${index}] (${group.get('languageISOCode')?.value}) is invalid:`,
@@ -260,6 +255,7 @@ categories = computed(() => {
     }
     console.groupEnd();
   }
+
   submit() {
     this.isSubmitted.set(true);
     this.logValidationErrors();

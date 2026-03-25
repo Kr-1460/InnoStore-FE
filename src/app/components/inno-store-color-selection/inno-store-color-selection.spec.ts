@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { InnoStoreColorSelection } from './inno-store-color-selection';
 
 describe('InnoStoreColorSelection', () => {

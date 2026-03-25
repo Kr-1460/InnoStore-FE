@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormArray } from '@angular/forms';
 import { ProductCategoryInformation } from '../../../../core/generated/models';
 
-// Import your custom UI components
 import { InnoStoreInput } from '../../../../components/inno-store-input/inno-store-input';
 import { InnoStoreCombobox } from '../../../../components/inno-store-combobox/inno-store-combobox';
 
@@ -12,27 +11,27 @@ import { InnoStoreCombobox } from '../../../../components/inno-store-combobox/in
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    InnoStoreInput, // Added
-    InnoStoreCombobox, // Added
+    InnoStoreInput,
+    InnoStoreCombobox,
   ],
   templateUrl: './product-content-section.html',
 })
+
 export class ProductContentSection {
   parentForm = input.required<FormGroup>();
   categories = input<ProductCategoryInformation[]>([]);
   activeLang = input.required<string>();
 
-  // Prepare categories for the Combobox
   uiCategories = computed(() => {
     const lang = this.activeLang();
     const cats = this.categories() || [];
 
-    return cats.map((cat) => {
-      const translation = cat.localizations?.find(l => l.languageISOCode ===lang);
+    return cats.map((category) => {
+      const translation = category.localizations?.find(l => l.languageISOCode === lang);
 
       return{
-        id: cat.id || '',
-        name:translation?.name || cat.localizations?.[0]?.name || 'Unnamed'
+        id: category.id || '',
+        name:translation?.name || category.localizations?.[0]?.name || 'Unnamed'
       }
     })
 

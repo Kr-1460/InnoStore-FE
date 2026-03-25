@@ -2,7 +2,7 @@
   <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-8">
     <div>
       <h1 class="text-3xl font-bold text-gray-900 flex items-center gap-3">
-        Товары за баллы
+        {{translations().goodsForPoints}}
 
         @if (filteredProducts()) {
           <span
@@ -12,7 +12,7 @@
           </span>
         }
       </h1>
-      <p class="mt-2 text-gray-500">Обменивайте заработанные баллы на реальные товары</p>
+      <p class="mt-2 text-gray-500">{{translations().exchangeGoods}}</p>
     </div>
 
     <a
@@ -22,7 +22,7 @@
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
       </svg>
-      Добавить товар
+      {{translations().addProduct}}
     </a>
   </div>
 
@@ -87,8 +87,7 @@
           <div class="flex items-center justify-between mt-auto pt-4 border-t border-gray-50">
             <span class="text-xl font-bold text-gray-900">{{ product.price }} ₽</span>
             <span
-              class="text-xs font-medium text-blue-600 bg-blue-50 px-2.5 py-1 rounded-lg group-hover:bg-blue-600 group-hover:text-white transition-colors"
-            >
+              class="text-xs font-medium text-blue-600 bg-blue-50 px-2.5 py-1 rounded-lg group-hover:bg-blue-600 group-hover:text-white transition-colors">
               Подробнее
             </span>
           </div>
@@ -111,8 +110,10 @@
           />
         </svg>
       </div>
-      <h3 class="text-lg font-medium text-gray-900">Товары не найдены</h3>
-      <p class="text-gray-500 mt-1">В этой категории пока нет товаров.</p>
+      productNotFound: "Items not found",
+      productNotFound: "Items not found",
+      <h3 class="text-lg font-medium text-gray-900">{{translations().productNotFound}}</h3>
+      <p class="text-gray-500 mt-1">{{translations().categoryIsEmpty}}</p>
     </div>
   }
 </div>

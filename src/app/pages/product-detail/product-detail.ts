@@ -56,7 +56,7 @@ export class ProductDetail {
       const systemColor = getSystemColorById(pc.color);
       return {
         ...pc, // Keep ProductColorDTO data (images, id, etc)
-        hex: systemColor?.hex || '#ccc', // Fallback hex
+        hex: systemColor?.hex || '#ccc',
         name: systemColor?.name || 'Unknown',
       };
     });
@@ -102,7 +102,7 @@ export class ProductDetail {
   protected selectColor(systemColorId: string): void {
     if (this.selectedSystemColorId() !== systemColorId) {
       this.selectedSystemColorId.set(systemColorId);
-      this.selectedImageIndex.set(0); // Reset gallery to start
+      this.selectedImageIndex.set(0);
     }
   }
 

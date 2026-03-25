@@ -42,17 +42,13 @@ export class FileService {
         } else {
             headers = new HttpHeaders(options?.headers);
         }
-        // Set Content-Type for URL-encoded form data
-        /*if (!headers.has('Content-Type')) {
-            headers = headers.set('Content-Type', 'application/x-www-form-urlencoded');
-        }*/
 
+        // Set Content-Type for URL-encoded form data
         const requestOptions: any = {
             observe: observe as any,
             headers,
             reportProgress: options?.reportProgress,
             withCredentials: options?.withCredentials,
-            //context: this.createContextWithClientId(options?.context)
         };
 
         return this.httpClient.post(url, formData, requestOptions);

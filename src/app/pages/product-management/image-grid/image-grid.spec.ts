@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { ImageGrid } from './image-grid';
 
 describe('ImageGrid', () => {

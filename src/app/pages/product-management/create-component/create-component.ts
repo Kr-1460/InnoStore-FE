@@ -14,6 +14,8 @@ import { response } from 'express';
 import { forkJoin, switchMap } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
+import { LOCALISATION } from '../../../core/constants/localisation';
+
 
 @Component({
   selector: 'app-create-component',
@@ -27,17 +29,6 @@ export class CreateComponent {
   private readonly fileService = inject(FileService);
   private readonly toastr = inject(ToastrService)
   private readonly router = inject(Router)
-
-  private translations: any = {
-    ru: {
-      successAdd: "продукт успешно добавлен",
-      error: "ошибка добавления продукта. проверьте данные и повторите попытку"
-    },
-    en: {
-      successAdd: "product was successfully added",
-      error: "The product wasn't successfully added! Check your data and try again"
-    }
-  }
 
   private currentLang = computed(() => this.productData().localizations[0].languageISOCode || 'ru');
 
@@ -78,8 +69,8 @@ export class CreateComponent {
   });
 
   onColorAdded(color: SystemColor) {
-    this.productData.update((prev) => {
-      if (prev.colors.some((c) => c.color === color.id)) return prev;
+    this.productData.update((previous) => {
+      if (previous.colors.some((c) => c.color === color.id)) return previous;
 
       const newColorEntry: CreateProductColorModel = {
         color: color.id,
@@ -87,8 +78,8 @@ export class CreateComponent {
       };
 
       return {
-        ...prev,
-        colors: [...prev.colors, newColorEntry],
+        ...previous,
+        colors: [...previous.colors, newColorEntry],
       };
     });
 
@@ -159,8 +150,8 @@ export class CreateComponent {
   }
 
   private modifyImages(
-    modifier: (current: CreateProductImageModel[]) => CreateProductImageModel[],
-  ) {
+    modifier: (current: CreateProductImageModel[]) => CreateProductImageModel[])
+  {
     const activeId = this.activeColorId();
     if (!activeId) return;
 
@@ -181,6 +172,7 @@ export class CreateComponent {
     const files = this.filesToUpload();
     const uploadTasks = files.map(f => this.fileService.uploadFile(f.file));
     const lang = this.currentLang();
+    const langKey = lang as keyof typeof LOCALISATION;
     const url = this.router.url;
 
     forkJoin(uploadTasks).pipe(
@@ -212,20 +204,19 @@ export class CreateComponent {
       };
         return this.productService.createProduct(finalData)
       })
-    ).subscribe({
+    )
+    .subscribe({
       next: (response) => {
         console.log('product was successfully created', response);
 
         this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
           this.router.navigate([url])
-        }
+        })
 
-        )
-
-        this.toastr.success(this.translations[lang].successAdd)
+        this.toastr.success(LOCALISATION[langKey].successAdd)
       },
       error: (error) => {
-        this.toastr.error(this.translations[lang].error)
+        this.toastr.error(LOCALISATION[langKey].error)
         console.error('smth went wrong', error)
       }
     });

@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { InnoStoreChip } from './inno-store-chip';
 
 describe('InnoStoreChip', () => {

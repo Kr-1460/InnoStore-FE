@@ -1,9 +1,7 @@
 <div class="py-6 border-t border-gray-100">
   <div class="flex flex-col mb-4">
-    <span class="text-lg font-semibold text-gray-900">Цвета модели</span>
-    <span class="text-xs text-gray-400 font-medium"
-      >Каждый цвет имеет свой набор фото. Наведите для управления.</span
-    >
+    <span class="text-lg font-semibold text-gray-900">{{translations().productColors}}</span>
+    <span class="text-xs text-gray-400 font-medium">{{translations().hoverToControl}}</span>
   </div>
 
   <div class="flex flex-wrap gap-4 items-center">
@@ -16,7 +14,7 @@
               [alreadySelected]="selectedColors()"
               labelKey="name"
               colorKey="hex"
-              placeholder="Заменить на..."
+              placeholder={{translations().replaceWith}}
               (itemSelected)="onSelectReplacement($event)"
               (close)="editingColorId.set(null)"
             />
@@ -25,7 +23,7 @@
           <button
             (click)="removeColor.emit(color); $event.stopPropagation()"
             class="absolute -top-1 -right-1 z-20 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-sm hover:bg-red-600"
-            title="Удалить цвет"
+            title={{translations().removeColor}}
           >
             <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" />
@@ -35,7 +33,7 @@
           <button
             (click)="startEdit(color); $event.stopPropagation()"
             class="absolute -bottom-1 -right-1 z-20 bg-blue-500 text-white rounded-full w-4 h-4 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-sm hover:bg-blue-600"
-            title="Изменить цвет"
+            title={{translations().changeTheColor}}
           >
             <svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 20 20">
               <path
@@ -81,7 +79,7 @@
             [alreadySelected]="selectedColors()"
             labelKey="name"
             colorKey="hex"
-            placeholder="Выберите новый цвет..."
+            placeholder={{translations().chooseNewColor}}
             (itemSelected)="onSelectNewColor($event)"
             (close)="isSelecting.set(false)"
           />
