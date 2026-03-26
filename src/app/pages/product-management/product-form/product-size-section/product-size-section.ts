@@ -1,4 +1,4 @@
-import { Component, input, inject } from '@angular/core';
+import { Component, input, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   ReactiveFormsModule,
@@ -9,6 +9,7 @@ import {
   AbstractControl,
 } from '@angular/forms';
 import { InnoStoreInput } from '../../../../components/inno-store-input/inno-store-input';
+import { LOCALISATION } from '../../../../core/constants/localisation';
 
 @Component({
   selector: 'app-product-size-section',
@@ -19,13 +20,11 @@ import { InnoStoreInput } from '../../../../components/inno-store-input/inno-sto
 export class ProductSizeSection {
   private fb = inject(FormBuilder);
 
-  // 1. NEW INPUT: Receive the main Reactive Form
   parentForm = input.required<FormGroup>();
 
   // 2. KEEP: We still need to know the language
   activeLang = input.required<string>();
 
-  // Helper to access the 'sizes' FormArray from the parent form
   get sizesArray(): FormArray {
     return this.parentForm().get('sizes') as FormArray;
   }
@@ -51,8 +50,6 @@ export class ProductSizeSection {
     this.sizesArray.removeAt(index);
   }
 
-  // --- Helper for Template ---
-
   // Finds the specific 'name' control for the current active language inside a specific size
   getSizeNameControl(sizeIndex: number): AbstractControl | null {
     const sizeGroup = this.sizesArray.at(sizeIndex) as FormGroup;
@@ -65,4 +62,9 @@ export class ProductSizeSection {
 
     return locGroup ? locGroup.get('name') : null;
   }
+
+  protected translations = computed(() => {
+    const languageKey = this.activeLang() as keyof typeof LOCALISATION;
+    return LOCALISATION[languageKey]
+  })
 }

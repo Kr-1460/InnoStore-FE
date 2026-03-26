@@ -2,8 +2,8 @@ import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CloseIcon } from '../../components/icons/close-icon/close-icon';
-import { ProductService } from '../../core/generated/services'; // Check your import path
-import { ProductDTO, ProductImageDTO } from '../../core/generated/models'; // Check your import path
+import { ProductService } from '../../core/generated/services';
+import { ProductDTO, ProductImageDTO } from '../../core/generated/models';
 import { getSystemColorById, SYSTEM_COLORS } from '../../core/constants/system-colors';
 
 @Component({
@@ -12,6 +12,7 @@ import { getSystemColorById, SYSTEM_COLORS } from '../../core/constants/system-c
   templateUrl: './product-detail.html',
   styleUrl: './product-detail.scss',
 })
+
 export class ProductDetail {
   private route = inject(ActivatedRoute);
   private productService = inject(ProductService);
@@ -35,10 +36,8 @@ export class ProductDetail {
 
     if (!p || !p.colors) return [];
 
-    // Find the color entry in the product that matches the selected system ID
     const activeColor = p.colors.find((c) => c.color === colorId);
 
-    // Sort by orderNumber if available, otherwise return as is
     return activeColor?.images || [];
   });
 
@@ -55,7 +54,7 @@ export class ProductDetail {
     return p.colors.map((pc) => {
       const systemColor = getSystemColorById(pc.color);
       return {
-        ...pc, // Keep ProductColorDTO data (images, id, etc)
+        ...pc,
         hex: systemColor?.hex || '#ccc',
         name: systemColor?.name || 'Unknown',
       };

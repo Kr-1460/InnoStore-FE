@@ -1,11 +1,11 @@
 <section class="flex flex-col gap-4">
   <div class="flex justify-between items-center mb-2">
-    <h3 class="text-lg font-semibold">Размеры</h3>
+    <h3 class="text-lg font-semibold">{{translations().sizes}}</h3>
     <button
       type="button"
       (click)="addSize()"
       class="text-sm font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 px-3 py-1.5 rounded-lg transition-colors">
-      + Добавить размер
+      {{translations().addSize}}
     </button>
   </div>
 
@@ -16,8 +16,8 @@
           @let nameControl = getSizeNameControl(i);
 
           <app-inno-store-input
-            [label]="'Размер (' + (activeLang() | uppercase) + ')'"
-            placeholder="Например: S, M, 42..."
+            [label]="'{{translations().sizes}} (' + (activeLang() | uppercase) + ')'"
+            placeholder={{translations().sizeExample}}
             [value]="nameControl?.value"
             (valueChange)="nameControl?.setValue($event)"
             [class]="
@@ -28,7 +28,7 @@
           />
 
           @if (nameControl?.invalid && (nameControl?.dirty || nameControl?.touched)) {
-            <span class="text-xs text-red-500 ml-1">Обязательно</span>
+            <span class="text-xs text-red-500 ml-1">{{translations().required}}</span>
           }
         </div>
 
@@ -36,7 +36,7 @@
           type="button"
           (click)="removeSize(i)"
           class="mt-4 p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-          title="Удалить размер"
+          title={{translations().removeSize}}
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
@@ -54,7 +54,7 @@
       <div
         class="text-center py-8 border-2 border-dashed border-gray-200 rounded-xl text-gray-400 bg-gray-50/50"
       >
-        Нет добавленных размеров
+        {{translations().noSizes}}
       </div>
     }
   </div>

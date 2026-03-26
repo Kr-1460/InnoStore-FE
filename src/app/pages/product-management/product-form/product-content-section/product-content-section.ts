@@ -5,6 +5,7 @@ import { ProductCategoryInformation } from '../../../../core/generated/models';
 
 import { InnoStoreInput } from '../../../../components/inno-store-input/inno-store-input';
 import { InnoStoreCombobox } from '../../../../components/inno-store-combobox/inno-store-combobox';
+import { LOCALISATION } from '../../../../core/constants/localisation';
 
 @Component({
   selector: 'app-product-content-section',
@@ -21,6 +22,11 @@ export class ProductContentSection {
   parentForm = input.required<FormGroup>();
   categories = input<ProductCategoryInformation[]>([]);
   activeLang = input.required<string>();
+
+  protected  translations = computed(() => {
+    const languageKey = this.activeLang() as keyof typeof LOCALISATION;
+    return LOCALISATION[languageKey];
+  })
 
   uiCategories = computed(() => {
     const lang = this.activeLang();

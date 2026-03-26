@@ -1,17 +1,17 @@
 <section class="mb-10" [formGroup]="parentForm()">
-  <h3 class="text-lg font-semibold mb-4">Контент ({{ activeLang() | uppercase }})</h3>
+  <h3 class="text-lg font-semibold mb-4">{{translations().content}} ({{ activeLang() | uppercase }})</h3>
 
   <div class="flex flex-col gap-4">
     <div class="flex flex-col gap-1 z-20">
       <app-inno-store-combobox
         [options]="uiCategories()"
         labelKey="name"
-        placeholder="Выберите категорию..."
+        placeholder={{translations().chooseCategory}}
         formControlName="productCategoryId"
       />
 
       @if (isFieldInvalid('productCategoryId')) {
-        <span class="text-xs text-red-500 ml-1">Выберите категорию из списка</span>
+        <span class="text-xs text-red-500 ml-1">{{translations().chooseCategoryFromThelist}}</span>
       }
     </div>
 
@@ -20,23 +20,23 @@
         <div class="flex gap-4">
           <div class="grow flex flex-col gap-1">
             <app-inno-store-input
-              label="Название товара"
-              placeholder="Введите название..."
+              label={{translations().productName}}
+              placeholder={{translations().enterName}}
               [value]="locGroup.get('name')?.value"
               (valueChange)="locGroup.get('name')?.setValue($event)"
               [class]="isLocFieldInvalid('name') ? 'border-red-500' : ''"
             />
 
             @if (isLocFieldInvalid('name')) {
-              <span class="text-xs text-red-500 ml-1">Название обязательно</span>
+              <span class="text-xs text-red-500 ml-1">{{translations().requiredName}}</span>
             }
           </div>
         </div>
 
         <div class="flex flex-col gap-1">
           <app-inno-store-input
-            label="Описание товара"
-            placeholder="Опишите товар..."
+            label={{translations().productDescription}}
+            placeholder={{translations().describeTheProduct}}
             [isMultiline]="true"
             [value]="locGroup.get('description')?.value"
             (valueChange)="locGroup.get('description')?.setValue($event)"
@@ -47,7 +47,7 @@
 
     <div class="w-32 flex flex-col gap-1">
       <app-inno-store-input
-        label="Стоимость"
+        label={{translations().cost}}
         type="number"
         placeholder="0"
         [value]="parentForm().get('price')?.value"
@@ -55,7 +55,7 @@
         [class]="isFieldInvalid('price') ? 'border-red-500' : ''"
       />
       @if (isFieldInvalid('price')) {
-        <span class="text-xs text-red-500 ml-1">Мин. 1</span>
+        <span class="text-xs text-red-500 ml-1">Min. 1</span>
       }
     </div>
   </div>

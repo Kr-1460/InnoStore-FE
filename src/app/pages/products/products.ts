@@ -1,7 +1,7 @@
 import { Component, inject, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { ProductCategoryService, ProductService } from '../../core/generated/services'; // Check path
+import { ProductCategoryService, ProductService } from '../../core/generated/services';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ProductCategoryInformation, ProductDTO } from '../../core/generated';
 import { filter, switchMap } from 'rxjs';

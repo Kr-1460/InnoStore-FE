@@ -4,11 +4,12 @@ import { Products } from './pages/products/products';
 import { ProductDetail } from './pages/product-detail/product-detail';
 import { Profile } from './pages/profile/profile';
 import { CreateComponent } from './pages/product-management/create-component/create-component';
+import { PATH } from './core/constants/path';
 
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: '/products',
+    redirectTo: PATH.redirectTo,
     pathMatch: 'full',
   },
   {
@@ -16,21 +17,21 @@ export const routes: Routes = [
     component: MainLayout,
     children: [
       {
-        path: 'products',
+        path: PATH.products,
         component: Products,
       },
       {
-        path: 'product/:id',
+        path: PATH.productDetailsRoute,
         component: ProductDetail,
       },
       {
-        path: 'products/create',
+        path: PATH.productCreatingRoute,
         component: CreateComponent,
       },
     ],
   },
   {
-    path: 'profile',
+    path: PATH.profile,
     component: Profile,
   },
 ];
